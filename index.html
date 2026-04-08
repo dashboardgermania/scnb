@@ -884,7 +884,7 @@ body {
           <div class="mkpi"><div class="mkpi-v" id="mk-modelo-top">—</div><div class="mkpi-l">Modelo Mais Vendido</div></div>
           <div class="mkpi"><div class="mkpi-v" id="mk-volt-top">—</div><div class="mkpi-l">Voltagem Dominante</div></div>
           <div class="mkpi"><div class="mkpi-v gold" id="mk-vmedio">—</div><div class="mkpi-l">Ticket Médio</div></div>
-          <div class="mkpi"><div class="mkpi-v" id="mk-retirada">—</div><div class="mkpi-l">% Retirada</div></div>
+          <div class="mkpi"><div class="mkpi-v green" id="mk-retirada">—</div><div class="mkpi-l">Total de Vendas</div></div>
         </div>
         <div class="g3">
           <div class="chart-box">
@@ -954,8 +954,8 @@ body {
     <div class="mkpi-row">
       <div class="mkpi"><div class="mkpi-v" id="mk-tpi">—</div><div class="mkpi-l">TPI Médio</div></div>
       <div class="mkpi"><div class="mkpi-v" id="mk-tma">—</div><div class="mkpi-l">TMA Médio</div></div>
-      <div class="mkpi"><div class="mkpi-v" id="mk-interag">—</div><div class="mkpi-l">Interações Agente</div></div>
-      <div class="mkpi"><div class="mkpi-v" id="mk-intercli">—</div><div class="mkpi-l">Interações Cliente</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="mk-interag">—</div><div class="mkpi-l">Interações Agente (méd.)</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="mk-intercli">—</div><div class="mkpi-l">Interações Cliente (méd.)</div></div>
     </div>
 
     <div class="chart-box mb">
@@ -1057,8 +1057,8 @@ body {
     <!-- Canal + Funil -->
     <div class="g2">
       <div class="chart-box">
-        <div class="ctitle">Canal Responsável pela Venda</div>
-        <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
+        <div class="ctitle">Atendimentos por Dia da Semana</div>
+        <canvas id="ch-diasemana" style="max-height:175px"></canvas>
       </div>
       <div class="chart-box" style="overflow-x:auto">
         <div class="ctitle">Funil por Origem · Com Conversão</div>
@@ -1296,9 +1296,19 @@ function donut(id,labels,data,colors){
 }
 function hbar(id,labels,data){
   dc(id);const ctx=document.getElementById(id);if(!ctx)return;
-  const barH=Math.max(28,Math.min(40, Math.floor(240/Math.max(labels.length,1))));
-  ctx.parentElement.style.minHeight=(labels.length*barH+60)+'px';
-  charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:C[0],borderRadius:3,borderSkipped:false,barThickness:barH-10}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:12},color:'#A89870'}},y:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:12},color:'#F1E3CE'}}}}});
+  const n=Math.max(labels.length,1);
+  const barH=22;
+  const totalH=n*barH+n*12+60;
+  ctx.parentElement.style.height=Math.max(totalH,180)+'px';
+  charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:C[0],borderRadius:4,borderSkipped:false,barThickness:barH}]},options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{top:4,bottom:4,right:16}},
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:'rgba(255,200,120,0.05)'},ticks:{font:{size:11},color:'#A89870'},border:{display:false}},
+      y:{grid:{display:false},ticks:{font:{size:12},color:'#F1E3CE'},border:{display:false}}
+    }
+  }});
 }
 function mbar(id,entries,color='gold',max=8){
   const el=document.getElementById(id);if(!el)return;
@@ -1440,7 +1450,9 @@ function renderChopeira(rd){
 
   // ── MINI KPIs AO VIVO ──
   const modFreq=freq(rd,'Modelo de Chopeira');
-  document.getElementById('mk-modelo-top').textContent=modFreq.length?modFreq[0][0].replace('Chopp ',''):'—';
+  const modTop=modFreq.length?modFreq[0]:null;
+  const modLabel=modTop?modTop[0].replace('Chopp ','').replace('Chopeira ',''):'—';
+  document.getElementById('mk-modelo-top').textContent=modTop?modLabel+' ('+modTop[1]+')':'—';
 
   // Voltagem: extrai de "Master 110v" / "Mini 220v"
   const voltMap={'110v':0,'220v':0};
@@ -1455,8 +1467,7 @@ function renderChopeira(rd){
   const va=vendidas.map(r=>parseFloat((r['Valor Único']||r['Valor']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
   document.getElementById('mk-vmedio').textContent=va.length?fmtBRL(avg(va)):'—';
 
-  const rt=vendidas.filter(r=>(r['Retirada da Chopeira']||'').toLowerCase()==='sim').length;
-  document.getElementById('mk-retirada').textContent=vendidas.length?Math.round(rt/vendidas.length*100)+'%':'—';
+  document.getElementById('mk-retirada').textContent=vendidas.length||'0';
 
   // ── DONUTS ──
   // Master vs Mini
@@ -1620,6 +1631,39 @@ function renderOperacional(ez){
   if(rec+atv>0) donut('ch-ativo',['Receptivo','Ativo'],[rec,atv],[C[3],C[2]]);
   const st=freq(ez,'Status',false);
   if(st.length) donut('ch-status',st.map(e=>e[0]),st.map(e=>e[1]));
+  // ── DIA DA SEMANA ──
+  const DIAS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const dsMap={0:0,1:0,2:0,3:0,4:0,5:0,6:0};
+  ez.forEach(r=>{
+    const d=parseDate(r['Criado em']);
+    if(d) dsMap[d.getDay()]++;
+  });
+  dc('ch-diasemana');
+  const dctx=document.getElementById('ch-diasemana');
+  if(dctx){
+    const dsVals=DIAS.map((_,i)=>dsMap[i]);
+    const maxDs=Math.max(...dsVals);
+    charts['ch-diasemana']=new Chart(dctx,{
+      type:'bar',
+      data:{
+        labels:DIAS,
+        datasets:[{
+          data:dsVals,
+          backgroundColor:dsVals.map(v=>v===maxDs?C[0]:'rgba(200,148,26,0.35)'),
+          borderRadius:4,borderSkipped:false
+        }]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:true,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{grid:{display:false},ticks:{font:{size:12},color:'#F1E3CE'},border:{display:false}},
+          y:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:11},color:'#A89870'},border:{display:false},beginAtZero:true}
+        }
+      }
+    });
+  }
+
   mbar('bar-agentes',freq(ez,'Nome do Agente').filter(([n])=>n&&n!=='BOT'&&n!=='-'),'cream');
   const cf=freqMulti(ez,'Classificações').filter(([n])=>n&&n!=='-');
   const ef=freqMulti(ez,'Etiquetas').filter(([n])=>n&&n!=='-');
@@ -1689,7 +1733,6 @@ function renderCampanhas(rd){
   }
 
   // ── CANAL ──
-  mbar('bar-canal',freq(rd,'Canal Responsável pela Venda'),'gold');
 
   // ── TABELA FUNIL POR ORIGEM com conversão destacada ──
   const om={};
