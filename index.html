@@ -718,6 +718,16 @@ body {
   .tab               { padding: 8px 10px; font-size: 11px; }
 }
 
+
+/* ── FILTROS: fonte propositalmente menor ── */
+.filters-wrap .btn-sh,
+.filters-wrap .btn-f,
+.filters-wrap .f-lbl,
+.filters-wrap .f-sel,
+.filters-wrap .date-inp,
+.filters-wrap .sync-btn,
+.filters-wrap .int-sel,
+.filters-wrap .sync-status { font-size: 11px !important; }
 </style>
 </head>
 <body>
@@ -810,7 +820,7 @@ body {
     <div class="g21 mb">
       <div class="chart-box">
         <div class="ctitle">Negociações por Etapa</div>
-        <canvas id="ch-etapas"></canvas>
+        <canvas id="ch-etapas" style="min-height:180px"></canvas>
       </div>
       <div class="chart-box">
         <div class="ctitle">Ciclo de Venda · Criação → Fechamento</div>
@@ -838,63 +848,75 @@ body {
   <div class="tab-panel" id="panel-chopeira">
 
     <!-- BLOCO 1: O PRODUTO -->
-    <div class="blk-lbl">🍺 O Produto <span class="blk-src">RD Station · ao vivo</span></div>
-    <div class="mkpi-row">
-      <div class="mkpi"><div class="mkpi-v" id="mk-modelo-top">—</div><div class="mkpi-l">Modelo Mais Vendido</div></div>
-      <div class="mkpi"><div class="mkpi-v" id="mk-volt-top">—</div><div class="mkpi-l">Voltagem Dominante</div></div>
-      <div class="mkpi"><div class="mkpi-v gold" id="mk-vmedio">—</div><div class="mkpi-l">Ticket Médio</div></div>
-      <div class="mkpi"><div class="mkpi-v" id="mk-retirada">—</div><div class="mkpi-l">% Retirada</div></div>
-    </div>
-    <div class="g3 mb">
-      <div class="chart-box">
-        <div class="ctitle">Master vs Mini</div>
-        <canvas id="ch-modelo"></canvas>
-      </div>
-      <div class="chart-box">
-        <div class="ctitle">Voltagem · 110v vs 220v</div>
-        <canvas id="ch-volt"></canvas>
-      </div>
-      <div class="chart-box">
-        <div class="ctitle">Forma de Pagamento</div>
-        <canvas id="ch-pgto"></canvas>
+    <div class="block mb">
+      <div class="bhead"><div class="bico gold">🍺</div><span class="btitle">O Produto</span><span class="bsub">RD Station · ao vivo</span></div>
+      <div class="bbody">
+        <div class="mkpi-row">
+          <div class="mkpi"><div class="mkpi-v" id="mk-modelo-top">—</div><div class="mkpi-l">Modelo Mais Vendido</div></div>
+          <div class="mkpi"><div class="mkpi-v" id="mk-volt-top">—</div><div class="mkpi-l">Voltagem Dominante</div></div>
+          <div class="mkpi"><div class="mkpi-v gold" id="mk-vmedio">—</div><div class="mkpi-l">Ticket Médio</div></div>
+          <div class="mkpi"><div class="mkpi-v" id="mk-retirada">—</div><div class="mkpi-l">% Retirada</div></div>
+        </div>
+        <div class="g3">
+          <div class="chart-box">
+            <div class="ctitle">Master vs Mini</div>
+            <canvas id="ch-modelo"></canvas>
+          </div>
+          <div class="chart-box">
+            <div class="ctitle">Voltagem · 110v vs 220v</div>
+            <canvas id="ch-volt"></canvas>
+          </div>
+          <div class="chart-box">
+            <div class="ctitle">Forma de Pagamento</div>
+            <canvas id="ch-pgto"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- BLOCO 2: O COMPRADOR (ICP) -->
-    <div class="blk-lbl">👤 O Comprador <span class="blk-src" id="icp-lbl-status">ICP · carregando...</span></div>
-    <div class="icp-demo-row" id="icp-demo-row">
-      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Gênero</div></div>
-      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Faixa Etária</div></div>
-      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Interior SP</div></div>
-      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Casados</div></div>
-      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Pagamento</div></div>
-    </div>
-    <div class="g2 mb">
-      <div class="chart-box">
-        <div class="ctitle">Top Profissões · ICP</div>
-        <div class="mbar-list" id="bar-prof"><div class="empty"><div class="ei">👔</div>Carregando ICP...</div></div>
-      </div>
-      <div class="chart-box">
-        <div class="ctitle">Uso Declarado · ICP</div>
-        <div id="uso-wrap"><div class="empty"><div class="ei">🏠</div>Carregando ICP...</div></div>
+    <!-- BLOCO 2: O COMPRADOR -->
+    <div class="block mb">
+      <div class="bhead"><div class="bico blue">👤</div><span class="btitle">O Comprador</span><span class="bsub" id="icp-lbl-status">ICP · carregando...</span></div>
+      <div class="bbody">
+        <div class="icp-demo-row" id="icp-demo-row">
+          <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Gênero</div></div>
+          <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Faixa Etária</div></div>
+          <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Interior SP</div></div>
+          <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Casados</div></div>
+          <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Pagamento</div></div>
+        </div>
+        <div class="g2">
+          <div class="chart-box">
+            <div class="ctitle">Top Profissões · ICP</div>
+            <div class="mbar-list" id="bar-prof"><div class="empty"><div class="ei">👔</div>Carregando ICP...</div></div>
+          </div>
+          <div class="chart-box">
+            <div class="ctitle">Uso Declarado · ICP</div>
+            <div id="uso-wrap"><div class="empty"><div class="ei">🏠</div>Carregando ICP...</div></div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- BLOCO 3: ACELERADORES -->
-    <div class="blk-lbl">⚡ Aceleradores de Venda <span class="blk-src">ICP · insights qualitativos</span></div>
-    <div class="g3 mb" id="acel-wrap">
-      <div class="acel-card"><div class="acel-ico">🎁</div><div class="acel-txt"><strong>Brinde Projetor 4K</strong><p>Presente em todas as conversas. Gerou reação imediata e acelerou fechamentos.</p></div></div>
-      <div class="acel-card"><div class="acel-ico">💰</div><div class="acel-txt"><strong>Crédito de Chopp como ROI</strong><p>Quem entende o mecanismo 50/50 avança. Explicar bem = menos objeção de preço.</p></div></div>
-      <div class="acel-card"><div class="acel-ico">🍺</div><div class="acel-txt"><strong>Familiaridade com a Marca</strong><p>Consumidores anteriores da Germânia convertem mais rápido e com menos objeções.</p></div></div>
-    </div>
-    <div class="g2">
-      <div class="chart-box">
-        <div class="ctitle">Principais Objeções</div>
-        <div class="mbar-list" id="bar-objecoes"></div>
-      </div>
-      <div class="chart-box">
-        <div class="ctitle">Dúvidas Antes do Fechamento</div>
-        <div class="mbar-list" id="bar-duvidas"></div>
+    <div class="block">
+      <div class="bhead"><div class="bico">⚡</div><span class="btitle">Aceleradores de Venda</span><span class="bsub">ICP · insights qualitativos</span></div>
+      <div class="bbody">
+        <div class="g3 mb" id="acel-wrap">
+          <div class="acel-card"><div class="acel-ico">🎁</div><div class="acel-txt"><strong>Brinde Projetor 4K</strong><p>Presente em todas as conversas. Gerou reação imediata e acelerou fechamentos.</p></div></div>
+          <div class="acel-card"><div class="acel-ico">💰</div><div class="acel-txt"><strong>Crédito de Chopp como ROI</strong><p>Quem entende o mecanismo 50/50 avança. Explicar bem = menos objeção de preço.</p></div></div>
+          <div class="acel-card"><div class="acel-ico">🍺</div><div class="acel-txt"><strong>Familiaridade com a Marca</strong><p>Consumidores anteriores da Germânia convertem mais rápido e com menos objeções.</p></div></div>
+        </div>
+        <div class="g2">
+          <div class="chart-box">
+            <div class="ctitle">Principais Objeções</div>
+            <div class="mbar-list" id="bar-objecoes"></div>
+          </div>
+          <div class="chart-box">
+            <div class="ctitle">Dúvidas Antes do Fechamento</div>
+            <div class="mbar-list" id="bar-duvidas"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -944,83 +966,90 @@ body {
   <!-- ── CAMPANHAS ── -->
   <div class="tab-panel" id="panel-campanhas">
 
-    <!-- KPIs de topo: Ads vs Orgânico resumido -->
-    <div class="mkpi-row">
-      <div class="mkpi"><div class="mkpi-v" id="ck-ads-total">—</div><div class="mkpi-l">Leads via Ads</div></div>
-      <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-vendas">—</div><div class="mkpi-l">Vendas via Ads</div></div>
-      <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-conv">—</div><div class="mkpi-l">Conv. Ads</div></div>
-      <div class="mkpi"><div class="mkpi-v" id="ck-org-total">—</div><div class="mkpi-l">Leads Orgânico</div></div>
-      <div class="mkpi"><div class="mkpi-v green" id="ck-org-vendas">—</div><div class="mkpi-l">Vendas Orgânico</div></div>
-      <div class="mkpi"><div class="mkpi-v green" id="ck-org-conv">—</div><div class="mkpi-l">Conv. Orgânico</div></div>
+    <!-- KPIs topo — dentro de block -->
+    <div class="block mb">
+      <div class="bhead"><div class="bico gold">🎯</div><span class="btitle">Resumo · Ads vs Orgânico</span><span class="bsub">RD Station · ao vivo</span></div>
+      <div class="bbody" style="padding:14px 18px">
+        <div class="mkpi-row" style="margin-bottom:0">
+          <div class="mkpi"><div class="mkpi-v" id="ck-ads-total">—</div><div class="mkpi-l">Leads via Ads</div></div>
+          <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-vendas">—</div><div class="mkpi-l">Vendas via Ads</div></div>
+          <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-conv">—</div><div class="mkpi-l">Conv. Ads</div></div>
+          <div class="mkpi"><div class="mkpi-v" id="ck-org-total">—</div><div class="mkpi-l">Leads Orgânico</div></div>
+          <div class="mkpi"><div class="mkpi-v green" id="ck-org-vendas">—</div><div class="mkpi-l">Vendas Orgânico</div></div>
+          <div class="mkpi"><div class="mkpi-v green" id="ck-org-conv">—</div><div class="mkpi-l">Conv. Orgânico</div></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Linha 2: Cards agência expandidos + donut -->
+    <!-- Cards Agência + Donut -->
     <div class="g21 mb">
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="ctitle" style="margin-bottom:2px">Campanhas Agência · Turma</div>
-        <div class="camp-card-full wpp" id="ccard-wpp">
-          <div class="ccf-head">
-            <div class="ccf-ico">📱</div>
-            <div class="ccf-info">
-              <div class="ccf-name">WhatsApp Button</div>
-              <div class="ccf-desc">LP → Botão WPP → CRM</div>
+      <div class="block">
+        <div class="bhead"><div class="bico green">📣</div><span class="btitle">Campanhas Agência · Turma</span></div>
+        <div class="bbody" style="display:flex;flex-direction:column;gap:10px">
+          <div class="camp-card-full wpp">
+            <div class="ccf-head">
+              <div class="ccf-ico">📱</div>
+              <div class="ccf-info">
+                <div class="ccf-name">WhatsApp Button</div>
+                <div class="ccf-desc">LP → Botão WPP → CRM</div>
+              </div>
             </div>
-          </div>
-          <div class="ccf-stats">
-            <div class="ccf-stat"><div class="ccf-sv" id="cw-leads">—</div><div class="ccf-sl">Leads</div></div>
-            <div class="ccf-sep"></div>
-            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cw-vendas">—</div><div class="ccf-sl">Vendas</div></div>
-            <div class="ccf-sep"></div>
-            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cw-perdas">—</div><div class="ccf-sl">Perdas</div></div>
-            <div class="ccf-sep"></div>
-            <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cw-conv">—</div><div class="ccf-sl">Conversão</div></div>
-          </div>
-          <div class="ccf-bar-wrap">
-            <div class="ccf-bar" id="cw-bar" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="camp-card-full form" id="ccard-form">
-          <div class="ccf-head">
-            <div class="ccf-ico">📝</div>
-            <div class="ccf-info">
-              <div class="ccf-name">Formulário Direto</div>
-              <div class="ccf-desc">LP → Form → CRM</div>
+            <div class="ccf-stats">
+              <div class="ccf-stat"><div class="ccf-sv" id="cw-leads">—</div><div class="ccf-sl">Leads</div></div>
+              <div class="ccf-sep"></div>
+              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cw-vendas">—</div><div class="ccf-sl">Vendas</div></div>
+              <div class="ccf-sep"></div>
+              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cw-perdas">—</div><div class="ccf-sl">Perdas</div></div>
+              <div class="ccf-sep"></div>
+              <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cw-conv">—</div><div class="ccf-sl">Conversão</div></div>
             </div>
+            <div class="ccf-bar-wrap"><div class="ccf-bar" id="cw-bar" style="width:0%"></div></div>
           </div>
-          <div class="ccf-stats">
-            <div class="ccf-stat"><div class="ccf-sv" id="cf-leads">—</div><div class="ccf-sl">Leads</div></div>
-            <div class="ccf-sep"></div>
-            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cf-vendas">—</div><div class="ccf-sl">Vendas</div></div>
-            <div class="ccf-sep"></div>
-            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cf-perdas">—</div><div class="ccf-sl">Perdas</div></div>
-            <div class="ccf-sep"></div>
-            <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cf-conv">—</div><div class="ccf-sl">Conversão</div></div>
-          </div>
-          <div class="ccf-bar-wrap">
-            <div class="ccf-bar" id="cf-bar" style="width:0%"></div>
+          <div class="camp-card-full form">
+            <div class="ccf-head">
+              <div class="ccf-ico">📝</div>
+              <div class="ccf-info">
+                <div class="ccf-name">Formulário Direto</div>
+                <div class="ccf-desc">LP → Form → CRM</div>
+              </div>
+            </div>
+            <div class="ccf-stats">
+              <div class="ccf-stat"><div class="ccf-sv" id="cf-leads">—</div><div class="ccf-sl">Leads</div></div>
+              <div class="ccf-sep"></div>
+              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cf-vendas">—</div><div class="ccf-sl">Vendas</div></div>
+              <div class="ccf-sep"></div>
+              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cf-perdas">—</div><div class="ccf-sl">Perdas</div></div>
+              <div class="ccf-sep"></div>
+              <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cf-conv">—</div><div class="ccf-sl">Conversão</div></div>
+            </div>
+            <div class="ccf-bar-wrap"><div class="ccf-bar" id="cf-bar" style="width:0%"></div></div>
           </div>
         </div>
       </div>
-      <div class="chart-box" style="display:flex;flex-direction:column">
-        <div class="ctitle">Distribuição por Origem</div>
-        <div style="flex:1;display:flex;align-items:center;justify-content:center">
-          <canvas id="ch-campanha" style="max-height:220px;max-width:320px"></canvas>
+      <div class="block">
+        <div class="bhead"><div class="bico">📊</div><span class="btitle">Distribuição por Origem</span></div>
+        <div class="bbody" style="display:flex;align-items:center;justify-content:center;min-height:200px">
+          <canvas id="ch-campanha" style="max-height:220px;max-width:300px"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- Linha 3: Canal + Funil por origem -->
+    <!-- Canal + Funil -->
     <div class="g2">
-      <div class="chart-box">
-        <div class="ctitle">Canal Responsável pela Venda</div>
-        <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
+      <div class="block">
+        <div class="bhead"><div class="bico gold">📡</div><span class="btitle">Canal Responsável pela Venda</span></div>
+        <div class="bbody">
+          <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
+        </div>
       </div>
-      <div class="chart-box">
-        <div class="ctitle">Funil por Origem · Com Conversão</div>
-        <table class="stbl" id="tbl-origem">
-          <thead><tr><th>Origem</th><th>Leads</th><th>Vendas</th><th>Perdas</th><th>Conv.</th></tr></thead>
-          <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
-        </table>
+      <div class="block">
+        <div class="bhead"><div class="bico blue">📋</div><span class="btitle">Funil por Origem · Com Conversão</span></div>
+        <div class="bbody" style="overflow-x:auto">
+          <table class="stbl" id="tbl-origem">
+            <thead><tr><th>Origem</th><th>Leads</th><th>Vendas</th><th>Perdas</th><th>Conv.</th></tr></thead>
+            <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -1251,7 +1280,9 @@ function donut(id,labels,data,colors){
 }
 function hbar(id,labels,data){
   dc(id);const ctx=document.getElementById(id);if(!ctx)return;
-  charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:C[0],borderRadius:3,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:10}}},y:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:10}}}}}});
+  const barH=Math.max(28,Math.min(40, Math.floor(240/Math.max(labels.length,1))));
+  ctx.parentElement.style.minHeight=(labels.length*barH+60)+'px';
+  charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:C[0],borderRadius:3,borderSkipped:false,barThickness:barH-10}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:12},color:'#A89870'}},y:{grid:{color:'rgba(255,200,120,0.06)'},ticks:{font:{size:12},color:'#F1E3CE'}}}}});
 }
 function mbar(id,entries,color='gold',max=8){
   const el=document.getElementById(id);if(!el)return;
