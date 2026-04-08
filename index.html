@@ -926,6 +926,13 @@ function filterRD(){
     return true;
   });
 }
+// Normaliza estados do RD Station → padrão interno
+function estadoNorm(r){
+  const e=(r['Estado']||'').trim();
+  if(['Ganho','Vendida','Vendido','Fechado','Fechada','Won'].includes(e)) return 'Ganho';
+  if(['Perdido','Perdida','Lost','Cancelado','Cancelada'].includes(e)) return 'Perdido';
+  return 'Em Andamento';
+}
 
 // ═══════════════════════════════════════
 // FREQ
@@ -982,17 +989,17 @@ function renderAll(){
 function renderHeader(ez,rd){
   document.getElementById('hkv-atend').textContent=ez.length||'0';
   document.getElementById('hkv-neg').textContent=rd.length||'0';
-  const g=rd.filter(r=>r['Estado']==='Ganho').length;
-  const p=rd.filter(r=>r['Estado']==='Perdido').length;
+  const g=rd.filter(r=>estadoNorm(r)==='Ganho').length;
+  const p=rd.filter(r=>estadoNorm(r)==='Perdido').length;
   document.getElementById('hkv-conv').textContent=g+p?Math.round(g/(g+p)*100)+'%':'—';
   document.getElementById('hks-conv').textContent=g+' de '+(g+p)+' decididas';
 }
 
 function renderFunil(rd){
-  const a=rd.filter(r=>r['Estado']==='Em Andamento').length;
-  const g=rd.filter(r=>r['Estado']==='Ganho').length;
-  const p=rd.filter(r=>r['Estado']==='Perdido').length;
-  const vg=rd.filter(r=>r['Estado']==='Ganho').reduce((s,r)=>{const v=parseFloat((r['Valor']||r['Valor Único']||'0').replace(',','.'));return s+(isNaN(v)?0:v);},0);
+  const a=rd.filter(r=>estadoNorm(r)==='Em Andamento').length;
+  const g=rd.filter(r=>estadoNorm(r)==='Ganho').length;
+  const p=rd.filter(r=>estadoNorm(r)==='Perdido').length;
+  const vg=rd.filter(r=>estadoNorm(r)==='Ganho').reduce((s,r)=>{const v=parseFloat((r['Valor Único']||r['Valor']||'0').replace(',','.'));return s+(isNaN(v)?0:v);},0);
   document.getElementById('mk-andamento').textContent=a;
   document.getElementById('mk-ganho').textContent=g;
   document.getElementById('mk-perdido').textContent=p;
@@ -1000,11 +1007,11 @@ function renderFunil(rd){
 
   const etapas=freq(rd,'Etapa');
   if(etapas.length) hbar('ch-etapas',etapas.map(e=>e[0]),etapas.map(e=>e[1]));
-  donut('ch-estado',['Em Andamento','Ganho','Perdido'],[a,g,p],[C[1],C[2],C[0]]);
+  donut('ch-estado',['Em Andamento','Vendida/Ganho','Perdida/Perdido'],[a,g,p],[C[1],C[2],C[0]]);
   mbar('bar-perda',freq(rd,'Motivo de Perda'),'red');
 
   const rm={};
-  rd.forEach(r=>{const n=r['Responsável']||r['Vendedor Responsável']||'(s/nome)';if(!rm[n])rm[n]={t:0,g:0,p:0};rm[n].t++;if(r['Estado']==='Ganho')rm[n].g++;if(r['Estado']==='Perdido')rm[n].p++;});
+  rd.forEach(r=>{const n=r['Responsável']||r['Vendedor Responsável']||'(s/nome)';if(!rm[n])rm[n]={t:0,g:0,p:0};rm[n].t++;if(estadoNorm(r)==='Ganho')rm[n].g++;if(estadoNorm(r)==='Perdido')rm[n].p++;});
   const re=Object.entries(rm).sort((a,b)=>b[1].t-a[1].t);
   document.querySelector('#tbl-resp tbody').innerHTML=re.length
     ?re.map(([n,v])=>`<tr><td>${n}</td><td><span class="tv">${v.t}</span></td><td style="color:var(--s-green)"><span class="tv">${v.g}</span></td><td style="color:var(--s-red)"><span class="tv">${v.p}</span></td><td>${v.g+v.p?Math.round(v.g/(v.g+v.p)*100)+'%':'—'}</td></tr>`).join('')
@@ -1012,10 +1019,10 @@ function renderFunil(rd){
 }
 
 function renderChopeira(rd){
-  const g=rd.filter(r=>r['Estado']==='Ganho');
+  const g=rd.filter(r=>estadoNorm(r)==='Ganho');
   const li=g.map(r=>parseFloat((r['Litragem']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
   const pe=g.map(r=>parseFloat((r['Quantidade de pessoas']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
-  const va=g.map(r=>parseFloat((r['Valor']||r['Valor Único']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
+  const va=g.map(r=>parseFloat((r['Valor Único']||r['Valor']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
   const rt=g.filter(r=>(r['Retirada da Chopeira']||'').toLowerCase()==='sim').length;
   document.getElementById('mk-litros').textContent=li.length?Math.round(avg(li))+'L':'—';
   document.getElementById('mk-pessoas').textContent=pe.length?Math.round(avg(pe)):'—';
@@ -1080,7 +1087,7 @@ function renderCampanhas(rd){
   if(cd.length){dc('ch-campanha');const ctx=document.getElementById('ch-campanha');if(ctx)charts['ch-campanha']=new Chart(ctx,{type:'doughnut',data:{labels:cd.map(e=>e.l),datasets:[{data:cd.map(e=>e.v),backgroundColor:cd.map(e=>e.c),borderWidth:0}]},options:{...DONUT,responsive:true,maintainAspectRatio:true}});}
   mbar('bar-canal',freq(rd,'Canal Responsável pela Venda'),'gold');
   const om={};
-  rd.forEach(r=>{const t=tipo(r);const lb=t==='wpp'?'WPP Button (Agência)':t==='form'?'Form Direto (Agência)':((r['Fonte']||'Desconhecido').trim()||'Desconhecido');if(!om[lb])om[lb]={t:0,g:0,p:0};om[lb].t++;if(r['Estado']==='Ganho')om[lb].g++;if(r['Estado']==='Perdido')om[lb].p++;});
+  rd.forEach(r=>{const t=tipo(r);const lb=t==='wpp'?'WPP Button (Agência)':t==='form'?'Form Direto (Agência)':((r['Fonte']||'Desconhecido').trim()||'Desconhecido');if(!om[lb])om[lb]={t:0,g:0,p:0};om[lb].t++;if(estadoNorm(r)==='Ganho')om[lb].g++;if(estadoNorm(r)==='Perdido')om[lb].p++;});
   const oe=Object.entries(om).sort((a,b)=>b[1].t-a[1].t);
   document.querySelector('#tbl-origem tbody').innerHTML=oe.length
     ?oe.map(([n,v])=>`<tr><td>${n.includes('WPP')?'<span class="badge wpp">WPP</span>':n.includes('Form')?'<span class="badge form">Form</span>':''} <span style="font-size:11px;margin-left:3px">${n}</span></td><td><span class="tv">${v.t}</span></td><td style="color:var(--s-green)"><span class="tv">${v.g}</span></td><td style="color:var(--s-red)"><span class="tv">${v.p}</span></td><td>${v.g+v.p?Math.round(v.g/(v.g+v.p)*100)+'%':'—'}</td></tr>`).join('')
