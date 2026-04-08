@@ -389,7 +389,7 @@ body {
   font-family:'Barlow Condensed',sans-serif;
   font-size:var(--fs-data-md);
   font-weight:900;
-  color:var(--txt);
+  color:#F0DEB8;
   line-height:1;
 }
 .mkpi-v.gold { color:var(--gold-lt); }
@@ -857,8 +857,6 @@ body {
   border-bottom: 0.8px solid var(--border);
 }
 
-/* UX #9: placeholder "—" em cor faint */
-.mkpi-v:not([data-loaded]) { color: var(--txt-faint); }
 
 /* chart-box mantido */
 .chart-box {
@@ -868,6 +866,38 @@ body {
   padding: 13px 14px;
 }
 .chart-box canvas { max-height: 180px; }
+
+
+/* ── ICP DIVIDER ── */
+.icp-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 14px;
+}
+.icp-div-line {
+  flex: 1;
+  height: 0.8px;
+  background: linear-gradient(90deg, transparent, var(--border2));
+}
+.icp-divider .icp-div-line:last-child {
+  background: linear-gradient(90deg, var(--border2), transparent);
+}
+.icp-div-content { text-align: center; flex-shrink: 0; }
+.icp-div-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: var(--fs-ui);
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.icp-div-sub {
+  font-size: 10px;
+  color: var(--txt-faint);
+  letter-spacing: .07em;
+  margin-top: 3px;
+}
 
 </style>
 </head>
@@ -1020,6 +1050,16 @@ body {
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- DIVISOR ICP -->
+    <div class="icp-divider">
+      <div class="icp-div-line"></div>
+      <div class="icp-div-content">
+        <div class="icp-div-title">Perfis</div>
+        <div class="icp-div-sub">Sem aplicação de filtros · Alimentado por perfil geral de vendas</div>
+      </div>
+      <div class="icp-div-line"></div>
     </div>
 
     <!-- BLOCO 2: O COMPRADOR -->
@@ -1571,14 +1611,14 @@ function renderChopeira(rd){
   const vendidas=rd.filter(r=>estadoNorm(r)==='Ganho');
 
   // ── MINI KPIs AO VIVO ──
-  const modFreq=freq(rd,'Modelo de Chopeira');
+  const modFreq=freq(vendidas,'Modelo de Chopeira');
   const modTop=modFreq.length?modFreq[0]:null;
   const modLabel=modTop?modTop[0].replace('Chopp ','').replace('Chopeira ',''):'—';
   document.getElementById('mk-modelo-top').textContent=modTop?modLabel+' ('+modTop[1]+')':'—';
 
-  // Voltagem: extrai de "Master 110v" / "Mini 220v"
+  // Voltagem: baseado em vendidas
   const voltMap={'110v':0,'220v':0};
-  rd.forEach(r=>{
+  vendidas.forEach(r=>{
     const m=(r['Modelo de Chopeira']||'').toLowerCase();
     if(m.includes('110')) voltMap['110v']++;
     else if(m.includes('220')) voltMap['220v']++;
@@ -1591,17 +1631,22 @@ function renderChopeira(rd){
 
   document.getElementById('mk-retirada').textContent=vendidas.length||'0';
 
-  // ── DONUTS ──
-  // Master vs Mini
-  const master=rd.filter(r=>(r['Modelo de Chopeira']||'').toLowerCase().includes('master')).length;
-  const mini=rd.filter(r=>(r['Modelo de Chopeira']||'').toLowerCase().includes('mini')).length;
+  // ── DONUTS — apenas vendas fechadas ──
+  const master=vendidas.filter(r=>(r['Modelo de Chopeira']||'').toLowerCase().includes('master')).length;
+  const mini=vendidas.filter(r=>(r['Modelo de Chopeira']||'').toLowerCase().includes('mini')).length;
   if(master+mini>0) donut('ch-modelo',['Master','Mini'],[master,mini],[C[0],C[1]]);
 
-  // 110v vs 220v
-  if(voltMap['110v']+voltMap['220v']>0) donut('ch-volt',['110v','220v'],[voltMap['110v'],voltMap['220v']],[C[2],C[3]]);
+  // 110v vs 220v — baseado em vendidas
+  const voltV={'110v':0,'220v':0};
+  vendidas.forEach(r=>{
+    const m=(r['Modelo de Chopeira']||'').toLowerCase();
+    if(m.includes('110')) voltV['110v']++;
+    else if(m.includes('220')) voltV['220v']++;
+  });
+  if(voltV['110v']+voltV['220v']>0) donut('ch-volt',['110v','220v'],[voltV['110v'],voltV['220v']],[C[2],C[3]]);
 
-  // Pagamento
-  const pg=freq(rd,'Forma de pagamento');
+  // Pagamento — apenas vendidas
+  const pg=freq(vendidas,'Forma de pagamento');
   if(pg.length) donut('ch-pgto',pg.map(e=>e[0]),pg.map(e=>e[1]));
 
   // ── ICP (se carregado) ──
