@@ -475,6 +475,51 @@ body {
 
 .divider { height:0.8px;background:var(--border2);margin:11px 0; }
 /* ── BLOCK LABELS ── */
+
+/* ── CAMP CARD FULL ── */
+.camp-card-full {
+  background:var(--card2);
+  border:0.8px solid var(--border);
+  border-radius:6px;
+  padding:14px 16px;
+  position:relative;overflow:hidden;
+}
+.camp-card-full::before {
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+}
+.camp-card-full.wpp::before  { background:var(--s-green); }
+.camp-card-full.form::before { background:var(--blue); }
+
+.ccf-head { display:flex;align-items:center;gap:10px;margin-bottom:12px; }
+.ccf-ico  { font-size:20px;width:34px;height:34px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.camp-card-full.wpp  .ccf-ico { background:var(--green-dim); }
+.camp-card-full.form .ccf-ico { background:var(--blue-dim); }
+.ccf-name { font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--txt); }
+.ccf-desc { font-size:10px;color:var(--txt-mid);margin-top:1px; }
+
+.ccf-stats { display:flex;align-items:center;gap:0;margin-bottom:12px; }
+.ccf-stat  { flex:1;text-align:center; }
+.ccf-stat.conv { flex:1.2; }
+.ccf-sv { font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;line-height:1;color:var(--txt); }
+.ccf-sl { font-size:9px;color:var(--txt-faint);text-transform:uppercase;letter-spacing:.08em;margin-top:3px; }
+.ccf-sep { width:0.8px;height:32px;background:var(--border2);flex-shrink:0; }
+
+.ccf-bar-wrap { height:3px;background:var(--border2);border-radius:2px;overflow:hidden; }
+.ccf-bar { height:100%;border-radius:2px;transition:width .7s ease; }
+.camp-card-full.wpp  .ccf-bar { background:linear-gradient(90deg,var(--s-green),#34d399); }
+.camp-card-full.form .ccf-bar { background:linear-gradient(90deg,var(--blue),#93c5fd); }
+
+/* conv badge inline na tabela */
+.conv-badge {
+  display:inline-block;
+  padding:2px 8px;border-radius:20px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:800;
+}
+.conv-badge.hi  { background:var(--green-dim);color:var(--s-green); }
+.conv-badge.mid { background:rgba(200,148,26,.13);color:var(--gold-lt); }
+.conv-badge.lo  { background:rgba(107,92,64,.15);color:var(--txt-mid); }
+
 .blk-lbl {
   font-family:'Barlow Condensed',sans-serif;
   font-size:13px;font-weight:800;
@@ -797,54 +842,89 @@ body {
 
   <!-- ── CAMPANHAS ── -->
   <div class="tab-panel" id="panel-campanhas">
-    <div class="g12">
-      <div>
-        <div class="ctitle" style="margin-bottom:9px">Campanhas Agência · Turma</div>
-        <div class="camp-cards">
-          <div class="camp-card wpp">
-            <div class="camp-ico">📱</div>
-            <div class="camp-info">
-              <h5>WhatsApp Button</h5>
-              <p>LP → Botão WPP → CRM</p>
-            </div>
-            <div class="camp-num">
-              <strong id="camp-wpp" style="color:var(--s-green)">—</strong>
-              <span>Negociações</span>
+
+    <!-- KPIs de topo: Ads vs Orgânico resumido -->
+    <div class="mkpi-row">
+      <div class="mkpi"><div class="mkpi-v" id="ck-ads-total">—</div><div class="mkpi-l">Leads via Ads</div></div>
+      <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-vendas">—</div><div class="mkpi-l">Vendas via Ads</div></div>
+      <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-conv">—</div><div class="mkpi-l">Conv. Ads</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="ck-org-total">—</div><div class="mkpi-l">Leads Orgânico</div></div>
+      <div class="mkpi"><div class="mkpi-v green" id="ck-org-vendas">—</div><div class="mkpi-l">Vendas Orgânico</div></div>
+      <div class="mkpi"><div class="mkpi-v green" id="ck-org-conv">—</div><div class="mkpi-l">Conv. Orgânico</div></div>
+    </div>
+
+    <!-- Linha 2: Cards agência expandidos + donut -->
+    <div class="g21 mb">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="ctitle" style="margin-bottom:2px">Campanhas Agência · Turma</div>
+        <div class="camp-card-full wpp" id="ccard-wpp">
+          <div class="ccf-head">
+            <div class="ccf-ico">📱</div>
+            <div class="ccf-info">
+              <div class="ccf-name">WhatsApp Button</div>
+              <div class="ccf-desc">LP → Botão WPP → CRM</div>
             </div>
           </div>
-          <div class="camp-card form">
-            <div class="camp-ico">📝</div>
-            <div class="camp-info">
-              <h5>Formulário Direto</h5>
-              <p>LP → Form → CRM</p>
-            </div>
-            <div class="camp-num">
-              <strong id="camp-form" style="color:var(--blue)">—</strong>
-              <span>Negociações</span>
-            </div>
+          <div class="ccf-stats">
+            <div class="ccf-stat"><div class="ccf-sv" id="cw-leads">—</div><div class="ccf-sl">Leads</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cw-vendas">—</div><div class="ccf-sl">Vendas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cw-perdas">—</div><div class="ccf-sl">Perdas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cw-conv">—</div><div class="ccf-sl">Conversão</div></div>
+          </div>
+          <div class="ccf-bar-wrap">
+            <div class="ccf-bar" id="cw-bar" style="width:0%"></div>
           </div>
         </div>
-        <div class="divider"></div>
-        <div class="chart-box">
-          <div class="ctitle">Canal Responsável pela Venda</div>
-          <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
+        <div class="camp-card-full form" id="ccard-form">
+          <div class="ccf-head">
+            <div class="ccf-ico">📝</div>
+            <div class="ccf-info">
+              <div class="ccf-name">Formulário Direto</div>
+              <div class="ccf-desc">LP → Form → CRM</div>
+            </div>
+          </div>
+          <div class="ccf-stats">
+            <div class="ccf-stat"><div class="ccf-sv" id="cf-leads">—</div><div class="ccf-sl">Leads</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cf-vendas">—</div><div class="ccf-sl">Vendas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cf-perdas">—</div><div class="ccf-sl">Perdas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cf-conv">—</div><div class="ccf-sl">Conversão</div></div>
+          </div>
+          <div class="ccf-bar-wrap">
+            <div class="ccf-bar" id="cf-bar" style="width:0%"></div>
+          </div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="chart-box" style="flex:1">
-          <div class="ctitle">Distribuição por Origem</div>
-          <canvas id="ch-campanha" style="max-height:185px"></canvas>
-        </div>
-        <div class="chart-box" style="flex:1">
-          <div class="ctitle">Funil por Origem</div>
-          <table class="stbl" id="tbl-origem">
-            <thead><tr><th>Origem</th><th>Total</th><th>Ganhas</th><th>Perdidas</th><th>Conv.</th></tr></thead>
-            <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
-          </table>
+      <div class="chart-box" style="display:flex;flex-direction:column">
+        <div class="ctitle">Distribuição por Origem</div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center">
+          <canvas id="ch-campanha" style="max-height:220px;max-width:320px"></canvas>
         </div>
       </div>
     </div>
+
+    <!-- Linha 3: Canal + Funil por origem -->
+    <div class="g2">
+      <div class="chart-box">
+        <div class="ctitle">Canal Responsável pela Venda</div>
+        <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
+      </div>
+      <div class="chart-box">
+        <div class="ctitle">Funil por Origem · Com Conversão</div>
+        <table class="stbl" id="tbl-origem">
+          <thead><tr><th>Origem</th><th>Leads</th><th>Vendas</th><th>Perdas</th><th>Conv.</th></tr></thead>
+          <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
+
 
 </div><!-- /main -->
 
@@ -1400,22 +1480,104 @@ function renderOperacional(ez){
 }
 
 function renderCampanhas(rd){
-  const tipo=r=>{const c=(r['Campanha']||'').toLowerCase();if(c.includes('botao wpp')||c.includes('botão wpp'))return 'wpp';if(c.includes('form direto'))return 'form';return 'other';};
-  const wpp=rd.filter(r=>tipo(r)==='wpp').length;
-  const form=rd.filter(r=>tipo(r)==='form').length;
-  const other=rd.filter(r=>tipo(r)==='other').length;
-  document.getElementById('camp-wpp').textContent=wpp;
-  document.getElementById('camp-form').textContent=form;
-  const cd=[{l:'WPP Button',v:wpp,c:'#1E7A42'},{l:'Form Direto',v:form,c:'#5B7FA6'},{l:'Outros',v:other,c:'#6B5C40'}].filter(e=>e.v>0);
-  if(cd.length){dc('ch-campanha');const ctx=document.getElementById('ch-campanha');if(ctx)charts['ch-campanha']=new Chart(ctx,{type:'doughnut',data:{labels:cd.map(e=>e.l),datasets:[{data:cd.map(e=>e.v),backgroundColor:cd.map(e=>e.c),borderWidth:0}]},options:{...DONUT,responsive:true,maintainAspectRatio:true}});}
+  const isAds=r=>{
+    const c=(r['Campanha']||'').toLowerCase();
+    return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');
+  };
+  const isWPP=r=>{const c=(r['Campanha']||'').toLowerCase();return c.includes('botao wpp')||c.includes('botão wpp');};
+  const isForm=r=>{const c=(r['Campanha']||'').toLowerCase();return c.includes('form direto');};
+
+  const s=arr=>({
+    total:arr.length,
+    v:arr.filter(r=>estadoNorm(r)==='Ganho').length,
+    p:arr.filter(r=>estadoNorm(r)==='Perdido').length,
+    conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}
+  });
+
+  const wpp=s(rd.filter(isWPP));
+  const form=s(rd.filter(isForm));
+  const ads=s(rd.filter(isAds));
+  const org=s(rd.filter(r=>!isAds(r)));
+
+  // ── MINI KPIs topo ──
+  document.getElementById('ck-ads-total').textContent=ads.total||'0';
+  document.getElementById('ck-ads-vendas').textContent=ads.v||'0';
+  document.getElementById('ck-ads-conv').textContent=ads.conv();
+  document.getElementById('ck-org-total').textContent=org.total||'0';
+  document.getElementById('ck-org-vendas').textContent=org.v||'0';
+  document.getElementById('ck-org-conv').textContent=org.conv();
+
+  // ── CARD WPP ──
+  document.getElementById('cw-leads').textContent=wpp.total;
+  document.getElementById('cw-vendas').textContent=wpp.v;
+  document.getElementById('cw-perdas').textContent=wpp.p;
+  document.getElementById('cw-conv').textContent=wpp.conv();
+  const wppBarPct=ads.total?Math.round(wpp.total/ads.total*100):0;
+  document.getElementById('cw-bar').style.width=wppBarPct+'%';
+
+  // ── CARD FORM ──
+  document.getElementById('cf-leads').textContent=form.total;
+  document.getElementById('cf-vendas').textContent=form.v;
+  document.getElementById('cf-perdas').textContent=form.p;
+  document.getElementById('cf-conv').textContent=form.conv();
+  const formBarPct=ads.total?Math.round(form.total/ads.total*100):0;
+  document.getElementById('cf-bar').style.width=formBarPct+'%';
+
+  // ── DONUT ──
+  const other=rd.length-wpp.total-form.total;
+  const cd=[
+    {l:'WPP Button',v:wpp.total,c:'#1E7A42'},
+    {l:'Form Direto',v:form.total,c:'#5B7FA6'},
+    {l:'Outros',v:other,c:'#3d2820'}
+  ].filter(e=>e.v>0);
+  if(cd.length){
+    dc('ch-campanha');
+    const ctx=document.getElementById('ch-campanha');
+    if(ctx) charts['ch-campanha']=new Chart(ctx,{
+      type:'doughnut',
+      data:{labels:cd.map(e=>e.l),datasets:[{data:cd.map(e=>e.v),backgroundColor:cd.map(e=>e.c),borderWidth:0}]},
+      options:{...DONUT,responsive:true,maintainAspectRatio:true}
+    });
+  }
+
+  // ── CANAL ──
   mbar('bar-canal',freq(rd,'Canal Responsável pela Venda'),'gold');
+
+  // ── TABELA FUNIL POR ORIGEM com conversão destacada ──
   const om={};
-  rd.forEach(r=>{const t=tipo(r);const lb=t==='wpp'?'WPP Button (Agência)':t==='form'?'Form Direto (Agência)':((r['Fonte']||'Desconhecido').trim()||'Desconhecido');if(!om[lb])om[lb]={t:0,g:0,p:0};om[lb].t++;if(estadoNorm(r)==='Ganho')om[lb].g++;if(estadoNorm(r)==='Perdido')om[lb].p++;});
+  rd.forEach(r=>{
+    const t=isWPP(r)?'wpp':isForm(r)?'form':'other';
+    const lb=t==='wpp'?'WPP Button (Agência)':t==='form'?'Form Direto (Agência)':((r['Fonte']||'Desconhecido').trim()||'Desconhecido');
+    if(!om[lb]) om[lb]={t:0,v:0,p:0,tag:t};
+    om[lb].t++;
+    if(estadoNorm(r)==='Ganho') om[lb].v++;
+    if(estadoNorm(r)==='Perdido') om[lb].p++;
+  });
+
+  const convClass=pct=>{
+    const n=parseInt(pct);
+    if(isNaN(n)) return 'lo';
+    if(n>=30) return 'hi';
+    if(n>=10) return 'mid';
+    return 'lo';
+  };
+
   const oe=Object.entries(om).sort((a,b)=>b[1].t-a[1].t);
   document.querySelector('#tbl-origem tbody').innerHTML=oe.length
-    ?oe.map(([n,v])=>`<tr><td>${n.includes('WPP')?'<span class="badge wpp">WPP</span>':n.includes('Form')?'<span class="badge form">Form</span>':''} <span style="font-size:11px;margin-left:3px">${n}</span></td><td><span class="tv">${v.t}</span></td><td style="color:var(--s-green)"><span class="tv">${v.g}</span></td><td style="color:var(--s-red)"><span class="tv">${v.p}</span></td><td>${v.g+v.p?Math.round(v.g/(v.g+v.p)*100)+'%':'—'}</td></tr>`).join('')
-    :'<tr><td colspan="5" class="empty" style="text-align:center">Sem dados</td></tr>';
+    ? oe.map(([n,v])=>{
+        const convPct=v.v+v.p?Math.round(v.v/(v.v+v.p)*100)+'%':'—';
+        const badge=v.tag==='wpp'?'<span class="badge wpp">WPP</span>':v.tag==='form'?'<span class="badge form">Form</span>':'';
+        return `<tr>
+          <td>${badge} <span style="font-size:11px;margin-left:3px">${n}</span></td>
+          <td><span class="tv">${v.t}</span></td>
+          <td style="color:var(--s-green)"><span class="tv">${v.v}</span></td>
+          <td style="color:var(--s-red)"><span class="tv">${v.p}</span></td>
+          <td><span class="conv-badge ${convClass(convPct)}">${convPct}</span></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="5" class="empty" style="text-align:center">Sem dados</td></tr>';
 }
+
 
 // ═══════════════════════════════════════
 // INIT
