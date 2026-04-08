@@ -1305,16 +1305,35 @@ function donut(id,labels,data,colors){
 function hbar(id,labels,data){
   dc(id);const ctx=document.getElementById(id);if(!ctx)return;
   const n=Math.max(labels.length,1);
-  const barH=22;
-  const totalH=n*barH+n*12+60;
-  ctx.parentElement.style.height=Math.max(totalH,180)+'px';
-  charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:C[0],borderRadius:4,borderSkipped:false,barThickness:barH}]},options:{
-    indexAxis:'y',responsive:true,maintainAspectRatio:false,
-    layout:{padding:{top:4,bottom:4,right:16}},
+  const barH=32;                        // barra generosa
+  const gap=16;                         // espaço entre barras
+  const totalH=n*(barH+gap)+80;
+  // força altura no canvas e no container
+  ctx.style.height=totalH+'px';
+  ctx.parentElement.style.height=(totalH+32)+'px'; // +ctitle
+  charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{
+    data,
+    backgroundColor:C[0],
+    borderRadius:5,
+    borderSkipped:false,
+    barThickness:barH
+  }]},options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    layout:{padding:{top:8,bottom:8,right:20,left:4}},
     plugins:{legend:{display:false}},
     scales:{
-      x:{grid:{color:'rgba(255,200,120,0.05)'},ticks:{font:{size:11},color:'#A89870'},border:{display:false}},
-      y:{grid:{display:false},ticks:{font:{size:12},color:'#F1E3CE'},border:{display:false}}
+      x:{
+        grid:{color:'rgba(255,200,120,0.05)'},
+        ticks:{font:{size:12},color:'#A89870'},
+        border:{display:false}
+      },
+      y:{
+        grid:{display:false},
+        ticks:{font:{size:13},color:'#F1E3CE',padding:8},
+        border:{display:false}
+      }
     }
   }});
 }
