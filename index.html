@@ -475,6 +475,21 @@ body {
 
 .divider { height:0.8px;background:var(--border2);margin:11px 0; }
 
+/* ADS VS ORGÂNICO */
+.ads-org-wrap { display:flex;flex-direction:column;gap:10px; }
+.ao-row {
+  background:var(--card2);border:0.8px solid var(--border);border-radius:6px;
+  padding:11px 14px;display:flex;align-items:center;gap:14px;
+}
+.ao-ico { font-size:20px;width:36px;height:36px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.ao-row.ads .ao-ico  { background:rgba(200,148,26,.13);border:0.8px solid rgba(200,148,26,.3); }
+.ao-row.org .ao-ico  { background:var(--green-dim);border:0.8px solid var(--green-bd); }
+.ao-label h5 { font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--txt); }
+.ao-label p  { font-size:10px;color:var(--txt-mid);margin-top:1px; }
+.ao-stats { margin-left:auto;display:flex;gap:16px;text-align:center; }
+.ao-stat-v { font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;line-height:1; }
+.ao-stat-l { font-size:9px;color:var(--txt-mid);text-transform:uppercase;letter-spacing:.08em;margin-top:2px; }
+
 /* ═══ FOOTER ═══ */
 .footer {
   text-align:center;padding:14px;color:var(--txt-faint);font-size:10px;
@@ -556,19 +571,11 @@ body {
   <button class="btn-f" onclick="applyFilter()">Filtrar</button>
 
   <div class="sync-group">
-    <input class="sync-inp" id="url-ez" placeholder="URL CSV · EZ Atendimentos">
-    <input class="sync-inp" id="url-rd" placeholder="URL CSV · RD Negociações">
-    <select class="int-sel" id="intSel" onchange="setAutoRefresh()">
-      <option value="0">Manual</option>
-      <option value="1">1 min</option>
-      <option value="5" selected>5 min</option>
-      <option value="15">15 min</option>
-    </select>
     <button class="sync-btn" id="syncBtn" onclick="fetchSheets()">
-      <span class="spin" id="spinIco">↻</span> Sync
+      <span class="spin" id="spinIco">↻</span> Atualizar
     </button>
     <div class="sync-status" id="syncStatus">
-      <span class="sync-dot"></span>Aguardando URL
+      <span class="sync-dot"></span>Carregando...
     </div>
   </div>
 </div>
@@ -579,10 +586,10 @@ body {
   <!-- ── FUNIL ── -->
   <div class="tab-panel active" id="panel-funil">
     <div class="mkpi-row">
-      <div class="mkpi"><div class="mkpi-v" id="mk-andamento">—</div><div class="mkpi-l">Em Andamento</div></div>
-      <div class="mkpi"><div class="mkpi-v green" id="mk-ganho">—</div><div class="mkpi-l">Ganhas</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="mk-atend-funil">—</div><div class="mkpi-l">Atendimentos</div></div>
       <div class="mkpi"><div class="mkpi-v red" id="mk-perdido">—</div><div class="mkpi-l">Perdidas</div></div>
-      <div class="mkpi"><div class="mkpi-v gold" id="mk-valor">—</div><div class="mkpi-l">Valor Total Ganho</div></div>
+      <div class="mkpi"><div class="mkpi-v green" id="mk-ganho">—</div><div class="mkpi-l">Vendas</div></div>
+      <div class="mkpi"><div class="mkpi-v gold" id="mk-valor">—</div><div class="mkpi-l">Valor Total</div></div>
     </div>
 
     <div class="g21 mb">
@@ -591,8 +598,10 @@ body {
         <canvas id="ch-etapas"></canvas>
       </div>
       <div class="chart-box">
-        <div class="ctitle">Estado Geral</div>
-        <canvas id="ch-estado"></canvas>
+        <div class="ctitle">Ciclo de Venda · Criação → Fechamento</div>
+        <div id="ciclo-med" style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--gold-lt);margin-bottom:8px;line-height:1">—</div>
+        <div id="ciclo-sub" style="font-size:10px;color:var(--txt-mid);margin-bottom:12px">média em dias (vendas fechadas)</div>
+        <div class="mbar-list" id="bar-ciclo"></div>
       </div>
     </div>
 
@@ -602,11 +611,10 @@ body {
         <div class="mbar-list" id="bar-perda"><div class="empty"><div class="ei">🔍</div>Aguardando dados</div></div>
       </div>
       <div class="chart-box">
-        <div class="ctitle">Por Responsável</div>
-        <table class="stbl" id="tbl-resp">
-          <thead><tr><th>Responsável</th><th>Total</th><th>Ganhas</th><th>Perdidas</th><th>Conv.</th></tr></thead>
-          <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
-        </table>
+        <div class="ctitle">Ads vs Orgânico · Origem dos Leads</div>
+        <div class="ads-org-wrap" id="ads-org-wrap">
+          <div class="empty"><div class="ei">📡</div>Aguardando dados</div>
+        </div>
       </div>
     </div>
   </div>
@@ -845,8 +853,8 @@ function splitL(l,delim=','){
 // LIVE FETCH
 // ═══════════════════════════════════════
 async function fetchSheets(){
-  const ez=document.getElementById('url-ez').value.trim()||URLS.ez;
-  const rd=document.getElementById('url-rd').value.trim()||URLS.rd;
+  const ez=URLS.ez;
+  const rd=URLS.rd;
   if(!ez&&!rd){setSS('err','Insira ao menos uma URL');return;}
   setSS('loading','Sincronizando...');
   document.getElementById('syncBtn').classList.add('loading');
@@ -870,8 +878,7 @@ function setSS(state,msg){
 }
 function setAutoRefresh(){
   if(autoTimer) clearInterval(autoTimer);
-  const min=parseInt(document.getElementById('intSel').value);
-  if(min>0) autoTimer=setInterval(fetchSheets,min*60000);
+  autoTimer=setInterval(fetchSheets,10*60000); // 10 minutos fixo
 }
 
 // ═══════════════════════════════════════
@@ -996,26 +1003,109 @@ function renderHeader(ez,rd){
 }
 
 function renderFunil(rd){
-  const a=rd.filter(r=>estadoNorm(r)==='Em Andamento').length;
   const g=rd.filter(r=>estadoNorm(r)==='Ganho').length;
   const p=rd.filter(r=>estadoNorm(r)==='Perdido').length;
   const vg=rd.filter(r=>estadoNorm(r)==='Ganho').reduce((s,r)=>{const v=parseFloat((r['Valor Único']||r['Valor']||'0').replace(',','.'));return s+(isNaN(v)?0:v);},0);
-  document.getElementById('mk-andamento').textContent=a;
+
+  // KPIs: atendimentos EZ (do estado global), perdidas, vendas, valor
+  const ezFilt=filterEZ();
+  document.getElementById('mk-atend-funil').textContent=ezFilt.length||'0';
   document.getElementById('mk-ganho').textContent=g;
   document.getElementById('mk-perdido').textContent=p;
   document.getElementById('mk-valor').textContent=fmtBRL(vg);
 
+  // Etapas
   const etapas=freq(rd,'Etapa');
   if(etapas.length) hbar('ch-etapas',etapas.map(e=>e[0]),etapas.map(e=>e[1]));
-  donut('ch-estado',['Em Andamento','Vendida/Ganho','Perdida/Perdido'],[a,g,p],[C[1],C[2],C[0]]);
+  else { dc('ch-etapas'); const c=document.getElementById('ch-etapas'); if(c) c.parentElement.innerHTML+=''; }
+
+  // ── CICLO DE VENDA ──
+  const vendidas=rd.filter(r=>estadoNorm(r)==='Ganho');
+  const ciclos=vendidas.map(r=>{
+    const dc=parseDateRD(r['Data de criação'],r['Hora de criação']);
+    const df=parseDateRD(r['Data de fechamento'],r['Hora de fechamento']);
+    if(!dc||!df) return null;
+    return Math.max(0,Math.round((df-dc)/(1000*60*60*24)));
+  }).filter(v=>v!==null);
+
+  const avgCiclo=ciclos.length?Math.round(ciclos.reduce((a,b)=>a+b,0)/ciclos.length):null;
+  document.getElementById('ciclo-med').textContent=avgCiclo!==null?avgCiclo+' dias':'—';
+  document.getElementById('ciclo-sub').textContent=ciclos.length?
+    `média em dias · ${ciclos.length} venda${ciclos.length>1?'s':''} analisada${ciclos.length>1?'s':''}`:
+    'sem vendas fechadas no período';
+
+  const faixas=[
+    {l:'Mesmo dia (0d)',  min:0,  max:0},
+    {l:'1 a 3 dias',     min:1,  max:3},
+    {l:'4 a 7 dias',     min:4,  max:7},
+    {l:'8 a 30 dias',    min:8,  max:30},
+    {l:'Mais de 30 dias',min:31, max:Infinity},
+  ];
+  const faixaCounts=faixas.map(f=>([f.l, ciclos.filter(d=>d>=f.min&&d<=f.max).length])).filter(e=>e[1]>0);
+  mbar('bar-ciclo',faixaCounts,'gold');
+
+  // ── MOTIVOS DE PERDA ──
   mbar('bar-perda',freq(rd,'Motivo de Perda'),'red');
 
-  const rm={};
-  rd.forEach(r=>{const n=r['Responsável']||r['Vendedor Responsável']||'(s/nome)';if(!rm[n])rm[n]={t:0,g:0,p:0};rm[n].t++;if(estadoNorm(r)==='Ganho')rm[n].g++;if(estadoNorm(r)==='Perdido')rm[n].p++;});
-  const re=Object.entries(rm).sort((a,b)=>b[1].t-a[1].t);
-  document.querySelector('#tbl-resp tbody').innerHTML=re.length
-    ?re.map(([n,v])=>`<tr><td>${n}</td><td><span class="tv">${v.t}</span></td><td style="color:var(--s-green)"><span class="tv">${v.g}</span></td><td style="color:var(--s-red)"><span class="tv">${v.p}</span></td><td>${v.g+v.p?Math.round(v.g/(v.g+v.p)*100)+'%':'—'}</td></tr>`).join('')
-    :'<tr><td colspan="5" class="empty" style="text-align:center">Sem dados</td></tr>';
+  // ── ADS VS ORGÂNICO ──
+  const isAds=r=>{
+    const c=(r['Campanha']||'').toLowerCase();
+    return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');
+  };
+  const ads=rd.filter(r=>isAds(r));
+  const org=rd.filter(r=>!isAds(r));
+
+  const stats=arr=>({
+    total:arr.length,
+    vendas:arr.filter(r=>estadoNorm(r)==='Ganho').length,
+    perdas:arr.filter(r=>estadoNorm(r)==='Perdido').length,
+    conv:()=>{const d=arr.filter(r=>estadoNorm(r)==='Ganho').length+arr.filter(r=>estadoNorm(r)==='Perdido').length;return d?Math.round(arr.filter(r=>estadoNorm(r)==='Ganho').length/d*100)+'%':'—';}
+  });
+
+  const sa=stats(ads), so=stats(org);
+  const wrap=document.getElementById('ads-org-wrap');
+  if(wrap){
+    wrap.innerHTML=`
+      <div class="ao-row ads">
+        <div class="ao-ico">🎯</div>
+        <div class="ao-label">
+          <h5>Anúncios · Agência</h5>
+          <p>WPP Button + Form Direto (Turma)</p>
+        </div>
+        <div class="ao-stats">
+          <div><div class="ao-stat-v">${sa.total}</div><div class="ao-stat-l">Leads</div></div>
+          <div><div class="ao-stat-v" style="color:var(--s-green)">${sa.vendas}</div><div class="ao-stat-l">Vendas</div></div>
+          <div><div class="ao-stat-v" style="color:var(--s-red)">${sa.perdas}</div><div class="ao-stat-l">Perdas</div></div>
+          <div><div class="ao-stat-v" style="color:var(--gold-lt)">${sa.conv()}</div><div class="ao-stat-l">Conv.</div></div>
+        </div>
+      </div>
+      <div class="ao-row org">
+        <div class="ao-ico">🌱</div>
+        <div class="ao-label">
+          <h5>Orgânico / Outros</h5>
+          <p>Cliente Ativo, Desconhecido, Indicação</p>
+        </div>
+        <div class="ao-stats">
+          <div><div class="ao-stat-v">${so.total}</div><div class="ao-stat-l">Leads</div></div>
+          <div><div class="ao-stat-v" style="color:var(--s-green)">${so.vendas}</div><div class="ao-stat-l">Vendas</div></div>
+          <div><div class="ao-stat-v" style="color:var(--s-red)">${so.perdas}</div><div class="ao-stat-l">Perdas</div></div>
+          <div><div class="ao-stat-v" style="color:var(--gold-lt)">${so.conv()}</div><div class="ao-stat-l">Conv.</div></div>
+        </div>
+      </div>
+      ${sa.total+so.total>0?`
+      <div style="background:var(--card2);border:0.8px solid var(--border);border-radius:6px;padding:10px 14px">
+        <div class="ctitle" style="margin-bottom:6px">Participação nos Leads</div>
+        <div style="height:6px;border-radius:3px;overflow:hidden;background:var(--border2);display:flex">
+          <div style="width:${Math.round(sa.total/(sa.total+so.total)*100)}%;background:var(--gold);border-radius:3px 0 0 3px"></div>
+          <div style="flex:1;background:var(--s-green);border-radius:0 3px 3px 0"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--txt-mid)">
+          <span style="color:var(--gold)">Ads ${Math.round(sa.total/(sa.total+so.total)*100)}%</span>
+          <span style="color:var(--s-green)">Orgânico ${Math.round(so.total/(sa.total+so.total)*100)}%</span>
+        </div>
+      </div>`:''}
+    `;
+  }
 }
 
 function renderChopeira(rd){
@@ -1099,11 +1189,7 @@ function renderCampanhas(rd){
 // ═══════════════════════════════════════
 initDates();
 setAutoRefresh();
-if(URLS.ez||URLS.rd){
-  document.getElementById('url-ez').value=URLS.ez;
-  document.getElementById('url-rd').value=URLS.rd;
-  fetchSheets();
-}
+if(URLS.ez||URLS.rd){ fetchSheets(); }
 </script>
 </body>
 </html>
