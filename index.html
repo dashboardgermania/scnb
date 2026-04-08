@@ -840,6 +840,8 @@ body {
 
   <!-- ── FUNIL ── -->
   <div class="tab-panel active" id="panel-funil">
+
+    <!-- Mini KPIs -->
     <div class="mkpi-row">
       <div class="mkpi"><div class="mkpi-v" id="mk-atend-funil">—</div><div class="mkpi-l">Atendimentos</div></div>
       <div class="mkpi"><div class="mkpi-v red" id="mk-perdido">—</div><div class="mkpi-l">Perdidas</div></div>
@@ -847,20 +849,8 @@ body {
       <div class="mkpi"><div class="mkpi-v gold" id="mk-valor">—</div><div class="mkpi-l">Valor Total</div></div>
     </div>
 
-    <div class="g21 mb">
-      <div class="chart-box">
-        <div class="ctitle">Negociações por Etapa</div>
-        <canvas id="ch-etapas" style="min-height:180px"></canvas>
-      </div>
-      <div class="chart-box">
-        <div class="ctitle">Ciclo de Venda · Criação → Fechamento</div>
-        <div id="ciclo-med" style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--gold-lt);margin-bottom:8px;line-height:1">—</div>
-        <div id="ciclo-sub" style="font-size:10px;color:var(--txt-mid);margin-bottom:12px">média em dias (vendas fechadas)</div>
-        <div class="mbar-list" id="bar-ciclo"></div>
-      </div>
-    </div>
-
-    <div class="g2">
+    <!-- Linha 1: Motivos de Perda + Ads vs Orgânico -->
+    <div class="g2 mb">
       <div class="chart-box">
         <div class="ctitle">Top Motivos de Perda</div>
         <div class="mbar-list" id="bar-perda"><div class="empty"><div class="ei">🔍</div>Aguardando dados</div></div>
@@ -872,8 +862,26 @@ body {
         </div>
       </div>
     </div>
-  </div>
 
+    <!-- Linha 2: Ciclo de Venda largura total -->
+    <div class="chart-box mb">
+      <div class="ctitle">Ciclo de Venda · Criação → Fechamento</div>
+      <div style="display:flex;align-items:flex-end;gap:24px;margin-bottom:12px">
+        <div>
+          <div id="ciclo-med" style="font-family:'Barlow Condensed',sans-serif;font-size:var(--fs-data-lg);font-weight:900;color:var(--gold-lt);line-height:1">—</div>
+          <div id="ciclo-sub" style="font-size:var(--fs-body);color:var(--txt-mid);margin-top:4px">média em dias · vendas fechadas</div>
+        </div>
+      </div>
+      <div class="mbar-list" id="bar-ciclo"></div>
+    </div>
+
+    <!-- Linha 3: Negociações por Etapa — largura total, respira -->
+    <div class="chart-box">
+      <div class="ctitle">Negociações por Etapa</div>
+      <canvas id="ch-etapas" style="min-height:180px"></canvas>
+    </div>
+
+  </div>
   <!-- ── CHOPEIRA & PERFIL ── -->
   <div class="tab-panel" id="panel-chopeira">
 
