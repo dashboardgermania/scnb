@@ -916,19 +916,19 @@ body {
       <div class="h-resumo-lbl">Resumo do Período</div>
       <div class="h-kpis">
         <div class="hk">
-          <div class="hk-l">Atendimentos</div>
-          <div class="hk-v" id="hkv-atend">—</div>
-          <div class="hk-sub" id="hks-atend">no período</div>
+          <div class="hk-l">Vendas</div>
+          <div class="hk-v" id="hkv-vendas">—</div>
+          <div class="hk-sub" id="hks-vendas">no período</div>
         </div>
         <div class="hk">
-          <div class="hk-l">Negociações</div>
-          <div class="hk-v" id="hkv-neg">—</div>
-          <div class="hk-sub" id="hks-neg">abertas + fechadas</div>
+          <div class="hk-l">Faturado</div>
+          <div class="hk-v" id="hkv-fat">—</div>
+          <div class="hk-sub" id="hks-fat">valor total</div>
         </div>
         <div class="hk">
           <div class="hk-l">Conversão</div>
           <div class="hk-v" id="hkv-conv">—</div>
-          <div class="hk-sub" id="hks-conv">ganhas / decididas</div>
+          <div class="hk-sub" id="hks-conv">vendas / decididas</div>
         </div>
       </div>
     </div>
@@ -984,7 +984,7 @@ body {
 
     <!-- Mini KPIs -->
     <div class="mkpi-row">
-      <div class="mkpi"><div class="mkpi-v" id="mk-atend-funil">—</div><div class="mkpi-l">Atendimentos</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="mk-apres">—</div><div class="mkpi-l">Apresentações</div></div>
       <div class="mkpi"><div class="mkpi-v red" id="mk-perdido">—</div><div class="mkpi-l">Perdidas</div></div>
       <div class="mkpi"><div class="mkpi-v green" id="mk-ganho">—</div><div class="mkpi-l">Vendas</div></div>
       <div class="mkpi"><div class="mkpi-v gold" id="mk-valor">—</div><div class="mkpi-l">Valor Total</div></div>
@@ -1111,6 +1111,7 @@ body {
     <!-- ── OPERACIONAL ── -->
   <div class="tab-panel" id="panel-operacional">
     <div class="mkpi-row">
+      <div class="mkpi"><div class="mkpi-v" id="mk-atend-op">—</div><div class="mkpi-l">Atendimentos</div></div>
       <div class="mkpi"><div class="mkpi-v" id="mk-tpi">—</div><div class="mkpi-l">TPI Médio</div></div>
       <div class="mkpi"><div class="mkpi-v" id="mk-tma">—</div><div class="mkpi-l">TMA Médio</div></div>
       <div class="mkpi"><div class="mkpi-v" id="mk-interag">—</div><div class="mkpi-l">Interações Agente (méd.)</div></div>
@@ -1299,6 +1300,12 @@ function fmtMin(m){
   return Math.round(m*60)+'s';
 }
 function fmtBRL(v){ return v&&!isNaN(v)?'R$'+parseFloat(v).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}):'—'; }
+function fmtBRLk(v){
+  if(!v||isNaN(v)) return '—';
+  if(v>=1000000) return 'R$'+Math.round(v/100000)/10+'M';
+  if(v>=1000) return 'R$'+Math.round(v/1000)+'k';
+  return fmtBRL(v);
+}
 function avg(a){ return a.length?a.reduce((x,y)=>x+y,0)/a.length:null; }
 
 // ═══════════════════════════════════════
@@ -1497,12 +1504,18 @@ function renderAll(){
 }
 
 function renderHeader(ez,rd){
-  document.getElementById('hkv-atend').textContent=ez.length||'0';
-  document.getElementById('hkv-neg').textContent=rd.length||'0';
-  const g=rd.filter(r=>estadoNorm(r)==='Ganho').length;
-  const p=rd.filter(r=>estadoNorm(r)==='Perdido').length;
-  document.getElementById('hkv-conv').textContent=g+p?Math.round(g/(g+p)*100)+'%':'—';
-  document.getElementById('hks-conv').textContent=g+' de '+(g+p)+' decididas';
+  const vendas=rd.filter(r=>estadoNorm(r)==='Ganho').length;
+  const perdidas=rd.filter(r=>estadoNorm(r)==='Perdido').length;
+  const faturado=rd.filter(r=>estadoNorm(r)==='Ganho')
+    .reduce((s,r)=>{const v=parseFloat((r['Valor Único']||r['Valor']||'0').replace(',','.'));return s+(isNaN(v)?0:v);},0);
+  const conv=vendas+perdidas?Math.round(vendas/(vendas+perdidas)*100)+'%':'—';
+
+  document.getElementById('hkv-vendas').textContent=vendas||'0';
+  document.getElementById('hks-vendas').textContent=vendas===1?'venda fechada':'vendas fechadas';
+  document.getElementById('hkv-fat').textContent=fmtBRLk(faturado);
+  document.getElementById('hks-fat').textContent=faturado?fmtBRL(faturado):'sem faturamento';
+  document.getElementById('hkv-conv').textContent=conv;
+  document.getElementById('hks-conv').textContent=vendas+' de '+(vendas+perdidas)+' decididas';
 }
 
 function renderFunil(rd){
@@ -1510,9 +1523,10 @@ function renderFunil(rd){
   const p=rd.filter(r=>estadoNorm(r)==='Perdido').length;
   const vg=rd.filter(r=>estadoNorm(r)==='Ganho').reduce((s,r)=>{const v=parseFloat((r['Valor Único']||r['Valor']||'0').replace(',','.'));return s+(isNaN(v)?0:v);},0);
 
-  // KPIs: atendimentos EZ (do estado global), perdidas, vendas, valor
-  const ezFilt=filterEZ();
-  document.getElementById('mk-atend-funil').textContent=ezFilt.length||'0';
+  // Apresentações = negociações na etapa "Atendimento / Demonstração"
+  const apres=rd.filter(r=>(r['Etapa']||'').toLowerCase().includes('atendimento')||
+                            (r['Etapa']||'').toLowerCase().includes('demonstra'));
+  document.getElementById('mk-apres').textContent=apres.length||'0';
   document.getElementById('mk-ganho').textContent=g;
   document.getElementById('mk-perdido').textContent=p;
   document.getElementById('mk-valor').textContent=fmtBRL(vg);
@@ -1776,6 +1790,7 @@ function renderICP(){
 }
 
 function renderOperacional(ez){
+  document.getElementById('mk-atend-op').textContent=ez.length||'0';
   const tpis=ez.map(r=>parseMin(r['Tempo para Primeira Interação'])).filter(v=>v!==null&&v>=0);
   const tmas=ez.map(r=>parseMin(r['Tempo de Atendimento'])).filter(v=>v!==null&&v>0);
   const ia=ez.map(r=>parseInt(r['Contagem de Interações do Agente'])).filter(v=>!isNaN(v)&&v>=0);
