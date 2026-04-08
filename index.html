@@ -735,7 +735,7 @@ body {
 <!-- HEADER -->
 <header class="header">
   <div class="header-inner">
-    <div class="h-logo">🍺</div>
+    <div class="h-logo"><img src="logo.png" alt="Germânia" style="width:52px;height:52px;object-fit:contain;border-radius:50%"></div>
     <div class="h-brand">
       <div class="eyebrow">Germânia · Cervejaria · Dashboard Comercial</div>
       <div class="h-title">SCNB · Chopeiras</div>
@@ -966,9 +966,9 @@ body {
   <!-- ── CAMPANHAS ── -->
   <div class="tab-panel" id="panel-campanhas">
 
-    <!-- KPIs topo — dentro de block -->
+    <!-- KPIs topo -->
     <div class="block mb">
-      <div class="bhead"><div class="bico gold">🎯</div><span class="btitle">Resumo · Ads vs Orgânico</span><span class="bsub">RD Station · ao vivo</span></div>
+      <div class="bhead"><div class="bico gold">🎯</div><span class="btitle">Ads vs Orgânico</span><span class="bsub">RD Station · ao vivo</span></div>
       <div class="bbody" style="padding:14px 18px">
         <div class="mkpi-row" style="margin-bottom:0">
           <div class="mkpi"><div class="mkpi-v" id="ck-ads-total">—</div><div class="mkpi-l">Leads via Ads</div></div>
@@ -983,73 +983,67 @@ body {
 
     <!-- Cards Agência + Donut -->
     <div class="g21 mb">
-      <div class="block">
-        <div class="bhead"><div class="bico green">📣</div><span class="btitle">Campanhas Agência · Turma</span></div>
-        <div class="bbody" style="display:flex;flex-direction:column;gap:10px">
-          <div class="camp-card-full wpp">
-            <div class="ccf-head">
-              <div class="ccf-ico">📱</div>
-              <div class="ccf-info">
-                <div class="ccf-name">WhatsApp Button</div>
-                <div class="ccf-desc">LP → Botão WPP → CRM</div>
-              </div>
+      <div class="chart-box" style="display:flex;flex-direction:column;gap:10px">
+        <div class="ctitle">Campanhas Agência · Turma</div>
+        <div class="camp-card-full wpp">
+          <div class="ccf-head">
+            <div class="ccf-ico">📱</div>
+            <div class="ccf-info">
+              <div class="ccf-name">WhatsApp Button</div>
+              <div class="ccf-desc">LP → Botão WPP → CRM</div>
             </div>
-            <div class="ccf-stats">
-              <div class="ccf-stat"><div class="ccf-sv" id="cw-leads">—</div><div class="ccf-sl">Leads</div></div>
-              <div class="ccf-sep"></div>
-              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cw-vendas">—</div><div class="ccf-sl">Vendas</div></div>
-              <div class="ccf-sep"></div>
-              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cw-perdas">—</div><div class="ccf-sl">Perdas</div></div>
-              <div class="ccf-sep"></div>
-              <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cw-conv">—</div><div class="ccf-sl">Conversão</div></div>
-            </div>
-            <div class="ccf-bar-wrap"><div class="ccf-bar" id="cw-bar" style="width:0%"></div></div>
           </div>
-          <div class="camp-card-full form">
-            <div class="ccf-head">
-              <div class="ccf-ico">📝</div>
-              <div class="ccf-info">
-                <div class="ccf-name">Formulário Direto</div>
-                <div class="ccf-desc">LP → Form → CRM</div>
-              </div>
-            </div>
-            <div class="ccf-stats">
-              <div class="ccf-stat"><div class="ccf-sv" id="cf-leads">—</div><div class="ccf-sl">Leads</div></div>
-              <div class="ccf-sep"></div>
-              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cf-vendas">—</div><div class="ccf-sl">Vendas</div></div>
-              <div class="ccf-sep"></div>
-              <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cf-perdas">—</div><div class="ccf-sl">Perdas</div></div>
-              <div class="ccf-sep"></div>
-              <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cf-conv">—</div><div class="ccf-sl">Conversão</div></div>
-            </div>
-            <div class="ccf-bar-wrap"><div class="ccf-bar" id="cf-bar" style="width:0%"></div></div>
+          <div class="ccf-stats">
+            <div class="ccf-stat"><div class="ccf-sv" id="cw-leads">—</div><div class="ccf-sl">Leads</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cw-vendas">—</div><div class="ccf-sl">Vendas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cw-perdas">—</div><div class="ccf-sl">Perdas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cw-conv">—</div><div class="ccf-sl">Conversão</div></div>
           </div>
+          <div class="ccf-bar-wrap"><div class="ccf-bar" id="cw-bar" style="width:0%"></div></div>
+        </div>
+        <div class="camp-card-full form">
+          <div class="ccf-head">
+            <div class="ccf-ico">📝</div>
+            <div class="ccf-info">
+              <div class="ccf-name">Formulário Direto</div>
+              <div class="ccf-desc">LP → Form → CRM</div>
+            </div>
+          </div>
+          <div class="ccf-stats">
+            <div class="ccf-stat"><div class="ccf-sv" id="cf-leads">—</div><div class="ccf-sl">Leads</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-green)" id="cf-vendas">—</div><div class="ccf-sl">Vendas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat"><div class="ccf-sv" style="color:var(--s-red)" id="cf-perdas">—</div><div class="ccf-sl">Perdas</div></div>
+            <div class="ccf-sep"></div>
+            <div class="ccf-stat conv"><div class="ccf-sv" style="color:var(--gold-lt)" id="cf-conv">—</div><div class="ccf-sl">Conversão</div></div>
+          </div>
+          <div class="ccf-bar-wrap"><div class="ccf-bar" id="cf-bar" style="width:0%"></div></div>
         </div>
       </div>
-      <div class="block">
-        <div class="bhead"><div class="bico">📊</div><span class="btitle">Distribuição por Origem</span></div>
-        <div class="bbody" style="display:flex;align-items:center;justify-content:center;min-height:200px">
-          <canvas id="ch-campanha" style="max-height:220px;max-width:300px"></canvas>
+      <div class="chart-box" style="display:flex;flex-direction:column">
+        <div class="ctitle">Distribuição por Origem</div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px 0">
+          <canvas id="ch-campanha" style="max-height:200px;max-width:280px"></canvas>
         </div>
       </div>
     </div>
 
     <!-- Canal + Funil -->
     <div class="g2">
-      <div class="block">
-        <div class="bhead"><div class="bico gold">📡</div><span class="btitle">Canal Responsável pela Venda</span></div>
-        <div class="bbody">
-          <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
-        </div>
+      <div class="chart-box">
+        <div class="ctitle">Canal Responsável pela Venda</div>
+        <div class="mbar-list" id="bar-canal"><div class="empty"><div class="ei">📡</div>Aguardando dados</div></div>
       </div>
-      <div class="block">
-        <div class="bhead"><div class="bico blue">📋</div><span class="btitle">Funil por Origem · Com Conversão</span></div>
-        <div class="bbody" style="overflow-x:auto">
-          <table class="stbl" id="tbl-origem">
-            <thead><tr><th>Origem</th><th>Leads</th><th>Vendas</th><th>Perdas</th><th>Conv.</th></tr></thead>
-            <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
-          </table>
-        </div>
+      <div class="chart-box" style="overflow-x:auto">
+        <div class="ctitle">Funil por Origem · Com Conversão</div>
+        <table class="stbl" id="tbl-origem">
+          <thead><tr><th>Origem</th><th>Leads</th><th>Vendas</th><th>Perdas</th><th>Conv.</th></tr></thead>
+          <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
+        </table>
       </div>
     </div>
 
