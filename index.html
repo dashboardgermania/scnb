@@ -80,14 +80,9 @@ body {
   flex-wrap: wrap;
 }
 .h-logo {
-  width: 68px; height: 68px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.25);
-  overflow: hidden;
-  background: rgba(0,0,0,0.2);
+  width: 72px; height: 72px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  font-size: 32px;
 }
 .h-brand {
   display: flex; flex-direction: column; gap: 2px;
@@ -483,64 +478,7 @@ body {
 .empty .ei { font-size:22px;margin-bottom:7px;opacity:.3; }
 
 .divider { height:0.8px;background:var(--border2);margin:11px 0; }
-/* ── BLOCK LABELS ── */
 
-/* ── CAMP CARD FULL ── */
-.camp-card-full {
-  background:var(--card2);
-  border:0.8px solid var(--border);
-  border-radius:6px;
-  padding:14px 16px;
-  position:relative;overflow:hidden;
-}
-.camp-card-full::before {
-  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
-}
-.camp-card-full.wpp::before  { background:var(--s-green); }
-.camp-card-full.form::before { background:var(--blue); }
-
-.ccf-head { display:flex;align-items:center;gap:10px;margin-bottom:12px; }
-.ccf-ico  { font-size:20px;width:34px;height:34px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-.camp-card-full.wpp  .ccf-ico { background:var(--green-dim); }
-.camp-card-full.form .ccf-ico { background:var(--blue-dim); }
-.ccf-name { font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--txt); }
-.ccf-desc { font-size:var(--fs-body);color:var(--txt-mid);margin-top:1px; }
-
-.ccf-stats { display:flex;align-items:center;gap:0;margin-bottom:12px; }
-.ccf-stat  { flex:1;text-align:center; }
-.ccf-stat.conv { flex:1.2; }
-.ccf-sv { font-family:'Barlow Condensed',sans-serif;font-size:var(--fs-data-md);font-weight:900;line-height:1;color:var(--txt); }
-.ccf-sl { font-size:var(--fs-label);color:var(--txt-faint);text-transform:uppercase;letter-spacing:.08em;margin-top:3px; }
-.ccf-sep { width:0.8px;height:32px;background:var(--border2);flex-shrink:0; }
-
-.ccf-bar-wrap { height:3px;background:var(--border2);border-radius:2px;overflow:hidden; }
-.ccf-bar { height:100%;border-radius:2px;transition:width .7s ease; }
-.camp-card-full.wpp  .ccf-bar { background:linear-gradient(90deg,var(--s-green),#34d399); }
-.camp-card-full.form .ccf-bar { background:linear-gradient(90deg,var(--blue),#93c5fd); }
-
-/* conv badge inline na tabela */
-.conv-badge {
-  display:inline-block;
-  padding:2px 8px;border-radius:20px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:var(--fs-data-sm);font-weight:800;
-}
-.conv-badge.hi  { background:var(--green-dim);color:var(--s-green); }
-.conv-badge.mid { background:rgba(200,148,26,.13);color:var(--gold-lt); }
-.conv-badge.lo  { background:rgba(107,92,64,.15);color:var(--txt-mid); }
-
-.blk-lbl {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:var(--fs-ui);font-weight:800;
-  text-transform:uppercase;letter-spacing:.1em;
-  color:var(--txt-mid);
-  margin-bottom:10px;margin-top:4px;
-  display:flex;align-items:center;gap:8px;
-}
-.blk-src {
-  font-weight:500;font-size:var(--fs-label);
-  color:var(--txt-faint);letter-spacing:.08em;
-}
 
 /* ── ICP DEMO ROW ── */
 .icp-demo-row {
@@ -735,7 +673,7 @@ body {
 <!-- HEADER -->
 <header class="header">
   <div class="header-inner">
-    <div class="h-logo"><img src="logo.png" alt="Germânia" style="width:52px;height:52px;object-fit:contain;border-radius:50%"></div>
+    <div class="h-logo"><img src="logo.png" alt="Germânia" style="width:72px;height:72px;object-fit:contain"></div>
     <div class="h-brand">
       <div class="eyebrow">Germânia · Cervejaria · Dashboard Comercial</div>
       <div class="h-title">SCNB · Chopeiras</div>
@@ -969,7 +907,7 @@ body {
     <!-- KPIs topo -->
     <div class="block mb">
       <div class="bhead"><div class="bico gold">🎯</div><span class="btitle">Ads vs Orgânico</span><span class="bsub">RD Station · ao vivo</span></div>
-      <div class="bbody" style="padding:14px 18px">
+      <div class="bbody">
         <div class="mkpi-row" style="margin-bottom:0">
           <div class="mkpi"><div class="mkpi-v" id="ck-ads-total">—</div><div class="mkpi-l">Leads via Ads</div></div>
           <div class="mkpi"><div class="mkpi-v gold" id="ck-ads-vendas">—</div><div class="mkpi-l">Vendas via Ads</div></div>
