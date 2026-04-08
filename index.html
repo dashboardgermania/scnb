@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>SCNB · Chopeiras · Germânia</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -563,94 +563,11 @@ body {
 ═══════════════════════════════════════ */
 
 /* Tablet (≤1024px) */
-@media (max-width: 1024px) {
-  :root { --pad-h: 16px; }
-  .kpi-strip         { grid-template-columns: repeat(3, 1fr); }
-  .g3                { grid-template-columns: 1fr 1fr; }
-  .mkpi-row          { flex-wrap: wrap; }
-  .mkpi              { min-width: 120px; }
-  .h-kpis            { gap: 6px; }
-  .hk                { min-width: 90px; padding: 8px 14px; }
-  .ccf-stats         { flex-wrap: wrap; gap: 8px; }
-  .ccf-sep           { display: none; }
-}
+/* ═══════════════════════════════════════
+   RESPONSIVE · MOBILE
+═══════════════════════════════════════ */
 
-/* Mobile (≤768px) */
-@media (max-width: 768px) {
-  :root {
-    --pad-h:      12px;
-    --fs-label:   12px;
-    --fs-body:    14px;
-    --fs-ui:      15px;
-    --fs-data-sm: 17px;
-    --fs-data-md: 28px;
-    --fs-data-lg: 30px;
-    --fs-hero:    26px;
-  }
-
-  /* Header */
-  .header-inner      { flex-direction: column; align-items: flex-start; gap: 12px; padding: 12px 0; }
-  .h-div             { display: none; }
-  .h-resumo-lbl      { text-align: left; }
-  .h-kpis            { width: 100%; justify-content: space-between; }
-  .hk                { flex: 1; min-width: 0; padding: 8px 10px; }
-
-  /* Tabs — scroll horizontal */
-  .tabs-wrap         { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .tabs              { flex-wrap: nowrap; min-width: max-content; gap: 2px; padding-bottom: 0; }
-  .tab               { padding: 10px 14px 9px; font-size: 12px; }
-
-  /* Filtros — stack */
-  .filters-wrap      { flex-direction: column; align-items: stretch; gap: 8px; }
-  .f-group           { flex-wrap: wrap; }
-  .f-shortcuts       { flex-wrap: wrap; }
-  .date-range        { width: 100%; }
-  .date-inp          { flex: 1; }
-  .sync-group        { width: 100%; justify-content: space-between; }
-  .sync-btn          { flex: 1; justify-content: center; }
-
-  /* Grids → 1 coluna */
-  .g2, .g3, .g21, .g12 { grid-template-columns: 1fr; }
-
-  /* KPI strip → 2 colunas */
-  .kpi-strip         { grid-template-columns: 1fr 1fr; }
-
-  /* Mini KPIs → 2 por linha */
-  .mkpi-row          { flex-wrap: wrap; }
-  .mkpi              { flex: 0 0 calc(50% - 5px); min-width: 0; }
-
-  /* ICP demo row → 2 colunas */
-  .icp-demo-row      { flex-wrap: wrap; }
-  .icp-dc            { flex: 0 0 calc(50% - 5px); min-width: 0; }
-
-  /* Campaign cards */
-  .ccf-stats         { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ccf-sep           { display: none; }
-  .ccf-stat          { text-align: center; }
-
-  /* Ads vs orgânico */
-  .ao-stats          { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-
-  /* Tabelas → scroll horizontal */
-  .chart-box         { overflow-x: auto; }
-  .stbl              { min-width: 420px; }
-
-  /* Main padding */
-  .main              { padding: 12px var(--pad-h); gap: 12px; }
-}
-
-/* Mobile pequeno (≤480px) */
-@media (max-width: 480px) {
-  :root { --fs-hero: 22px; --fs-data-lg: 26px; }
-  .kpi-strip         { grid-template-columns: 1fr 1fr; }
-  .h-logo            { width: 48px; height: 48px; font-size: 24px; }
-  .hk                { padding: 6px 8px; }
-  .hk-v              { font-size: 22px; }
-  .tab               { padding: 8px 10px; font-size: 11px; }
-}
-
-
-/* ── FILTROS: fonte propositalmente menor ── */
+/* ── Filtros: fonte sempre menor ── */
 .filters-wrap .btn-sh,
 .filters-wrap .btn-f,
 .filters-wrap .f-lbl,
@@ -659,6 +576,161 @@ body {
 .filters-wrap .sync-btn,
 .filters-wrap .int-sel,
 .filters-wrap .sync-status { font-size: 11px !important; }
+
+/* ── Tablet (≤1024px) ── */
+@media (max-width: 1024px) {
+  :root { --pad-h: 18px; }
+  .g3  { grid-template-columns: 1fr 1fr; }
+  .hk  { min-width: 88px; padding: 8px 12px; }
+  .hk-v { font-size: var(--fs-data-lg); }
+  .mkpi-row { flex-wrap: wrap; }
+  .mkpi { min-width: calc(33% - 8px); }
+  .ccf-sep { display: none; }
+  .ccf-stats { gap: 10px; }
+}
+
+/* ── Mobile (≤768px) ── */
+@media (max-width: 768px) {
+  :root {
+    --pad-h:      14px;
+    --fs-label:   11px;
+    --fs-body:    13px;
+    --fs-ui:      14px;
+    --fs-data-sm: 16px;
+    --fs-data-md: 24px;
+    --fs-data-lg: 28px;
+    --fs-hero:    24px;
+  }
+
+  /* Header — empilha vertical */
+  .header { padding: 0 var(--pad-h); }
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 0 10px;
+  }
+  .h-div { display: none; }
+  .h-logo { width: 52px; height: 52px; }
+  .h-resumo-lbl { text-align: left; margin-bottom: 4px; }
+  .h-kpis { width: 100%; gap: 6px; }
+  .hk { flex: 1; min-width: 0; padding: 8px 8px; text-align: center; }
+  .hk-v { font-size: 22px; }
+  .hk-sub { font-size: 10px; display: none; } /* esconde sub no mobile — muito apertado */
+
+  /* Tabs — scroll horizontal sem quebra */
+  .tabs-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tabs-wrap::-webkit-scrollbar { display: none; }
+  .tabs { flex-wrap: nowrap; min-width: max-content; }
+  .tab { padding: 9px 14px 8px; font-size: 12px; white-space: nowrap; }
+
+  /* Filtros — stack limpo */
+  .filters-wrap {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px var(--pad-h);
+  }
+  .f-group { flex-wrap: wrap; gap: 5px; }
+  .f-shortcuts { flex-wrap: wrap; gap: 4px; }
+  .date-range { width: 100%; }
+  .date-inp { flex: 1; min-width: 0; }
+  .sync-group {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 0.8px solid var(--border);
+    padding-top: 8px;
+  }
+  .sync-btn { flex: 1; justify-content: center; }
+
+  /* Main */
+  .main { padding: 12px var(--pad-h); gap: 12px; }
+
+  /* Grids → 1 coluna */
+  .g2, .g3, .g21, .g12 {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  /* Mini KPIs → 2 por linha */
+  .mkpi-row { flex-wrap: wrap; gap: 8px; }
+  .mkpi { flex: 0 0 calc(50% - 4px); min-width: 0; }
+
+  /* hbar labels — reduz largura fixa */
+  .hbar-name { width: 130px; font-size: 11px; }
+  .hbar-val  { font-size: 13px; width: 28px; }
+
+  /* mbar labels */
+  .mbar-lbl { font-size: 11px; max-width: 68%; }
+
+  /* Campaign cards */
+  .ccf-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .ccf-sep { display: none; }
+  .ccf-stat { text-align: center; }
+  .ccf-sv { font-size: 22px; }
+
+  /* Ads vs orgânico */
+  .ao-row { flex-wrap: wrap; gap: 8px; }
+  .ao-stats { margin-left: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+  /* ICP demo row → 2 colunas */
+  .icp-demo-row { flex-wrap: wrap; }
+  .icp-dc { flex: 0 0 calc(50% - 5px); min-width: 0; }
+
+  /* Aceleradores → 1 coluna */
+  .acel-card { flex-direction: row; align-items: flex-start; gap: 12px; }
+  .acel-ico { flex-shrink: 0; }
+
+  /* Tabelas → scroll horizontal isolado no container */
+  .chart-box { overflow: visible; } /* não overflow no chart-box inteiro */
+  .stbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .stbl { min-width: 400px; }
+
+  /* Block cards */
+  .bbody { padding: 12px 14px; }
+  .bhead { padding: 10px 14px; }
+
+  /* Chart boxes */
+  .chart-box { padding: 10px 12px; }
+  .cbox { padding: 10px 12px; }
+
+  /* ICP divider */
+  .icp-divider { margin: 6px 0 10px; }
+  .icp-div-title { font-size: 13px; }
+  .icp-div-sub { font-size: 9px; }
+
+  /* Donuts — limita altura */
+  .chart-box canvas { max-height: 160px; }
+}
+
+/* ── Mobile pequeno (≤480px) ── */
+@media (max-width: 480px) {
+  :root {
+    --pad-h: 10px;
+    --fs-hero: 20px;
+    --fs-data-lg: 24px;
+    --fs-data-md: 20px;
+  }
+
+  .h-logo { width: 44px; height: 44px; }
+  .hk-v { font-size: 18px; }
+  .tab { padding: 8px 10px; font-size: 11px; }
+
+  /* Mini KPIs → 2 colunas mas menores */
+  .mkpi { padding: 9px 10px; }
+  .mkpi-v { font-size: var(--fs-data-md); }
+
+  /* hbar ainda mais compacto */
+  .hbar-name { width: 100px; font-size: 10px; }
+
+  /* Header KPIs empilhados */
+  .h-kpis { gap: 4px; }
+  .hk { padding: 6px 6px; }
+}
 
 /* ── CAMP CARD FULL ── */
 .camp-card-full {
@@ -898,6 +970,17 @@ body {
   letter-spacing: .07em;
   margin-top: 3px;
 }
+
+
+/* ── stbl-wrap: scroll horizontal isolado para tabelas ── */
+.stbl-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.stbl-wrap::-webkit-scrollbar { height: 3px; }
+.stbl-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
 </style>
 </head>
@@ -1222,10 +1305,11 @@ body {
       </div>
       <div class="chart-box" style="overflow-x:auto">
         <div class="ctitle">Funil por Origem · Com Conversão</div>
-        <table class="stbl" id="tbl-origem">
+        <div class="stbl-wrap"><table class="stbl" id="tbl-origem">
           <thead><tr><th>Origem</th><th>Leads</th><th>Vendas</th><th>Perdas</th><th>Conv.</th></tr></thead>
           <tbody><tr><td colspan="5" class="empty" style="text-align:center">Aguardando dados</td></tr></tbody>
         </table>
+</div>
       </div>
     </div>
 
