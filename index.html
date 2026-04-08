@@ -474,6 +474,75 @@ body {
 .empty .ei { font-size:22px;margin-bottom:7px;opacity:.3; }
 
 .divider { height:0.8px;background:var(--border2);margin:11px 0; }
+/* ── BLOCK LABELS ── */
+.blk-lbl {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--txt-mid);
+  margin-bottom:10px;margin-top:4px;
+  display:flex;align-items:center;gap:8px;
+}
+.blk-src {
+  font-weight:500;font-size:10px;
+  color:var(--txt-faint);letter-spacing:.08em;
+}
+
+/* ── ICP DEMO ROW ── */
+.icp-demo-row {
+  display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;
+}
+.icp-dc {
+  flex:1;min-width:100px;
+  background:var(--card2);
+  border:0.8px solid var(--border);
+  border-radius:6px;
+  padding:12px 14px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.icp-dc::after {
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt));
+}
+.icp-dc-v {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:20px;font-weight:900;
+  color:var(--gold-lt);line-height:1;
+}
+.icp-dc-l {
+  font-size:9px;color:var(--txt-mid);
+  text-transform:uppercase;letter-spacing:.09em;margin-top:4px;
+}
+
+/* ── ACELERADORES ── */
+.acel-card {
+  background:var(--card2);
+  border:0.8px solid var(--border);
+  border-radius:6px;
+  padding:14px 15px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.acel-ico { font-size:26px;line-height:1; }
+.acel-txt strong {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.05em;
+  color:var(--txt);display:block;margin-bottom:5px;
+}
+.acel-txt p { font-size:11px;color:var(--txt-mid);line-height:1.5; }
+
+/* ── USO WRAP ── */
+.uso-row {
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:0.8px solid var(--border);
+}
+.uso-row:last-child { border-bottom:none; }
+.uso-bar-track { flex:1;height:5px;background:var(--border2);border-radius:3px;overflow:hidden; }
+.uso-bar-fill { height:100%;border-radius:3px; }
+.uso-lbl { font-size:11px;color:var(--txt-mid);white-space:nowrap;min-width:90px; }
+.uso-pct { font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--txt);min-width:36px;text-align:right; }
+
 
 /* ADS VS ORGÂNICO */
 .ads-org-wrap { display:flex;flex-direction:column;gap:10px; }
@@ -543,7 +612,7 @@ body {
 <div class="tabs-wrap">
   <div class="tabs">
     <div class="tab active" onclick="switchTab('funil',this)">Funil Comercial</div>
-    <div class="tab" onclick="switchTab('chopeira',this)">Perfil Chopeira</div>
+    <div class="tab" onclick="switchTab('chopeira',this)">Chopeira & Perfil</div>
     <div class="tab" onclick="switchTab('operacional',this)">Atendimento</div>
     <div class="tab" onclick="switchTab('campanhas',this)">Origem & Campanhas</div>
   </div>
@@ -619,23 +688,25 @@ body {
     </div>
   </div>
 
-  <!-- ── CHOPEIRA ── -->
+  <!-- ── CHOPEIRA & PERFIL ── -->
   <div class="tab-panel" id="panel-chopeira">
+
+    <!-- BLOCO 1: O PRODUTO -->
+    <div class="blk-lbl">🍺 O Produto <span class="blk-src">RD Station · ao vivo</span></div>
     <div class="mkpi-row">
-      <div class="mkpi"><div class="mkpi-v" id="mk-litros">—</div><div class="mkpi-l">Litragem Média</div></div>
-      <div class="mkpi"><div class="mkpi-v" id="mk-pessoas">—</div><div class="mkpi-l">Pessoas (médio)</div></div>
-      <div class="mkpi"><div class="mkpi-v gold" id="mk-vmedio">—</div><div class="mkpi-l">Valor Médio</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="mk-modelo-top">—</div><div class="mkpi-l">Modelo Mais Vendido</div></div>
+      <div class="mkpi"><div class="mkpi-v" id="mk-volt-top">—</div><div class="mkpi-l">Voltagem Dominante</div></div>
+      <div class="mkpi"><div class="mkpi-v gold" id="mk-vmedio">—</div><div class="mkpi-l">Ticket Médio</div></div>
       <div class="mkpi"><div class="mkpi-v" id="mk-retirada">—</div><div class="mkpi-l">% Retirada</div></div>
     </div>
-
     <div class="g3 mb">
       <div class="chart-box">
-        <div class="ctitle">Modelo de Chopeira</div>
+        <div class="ctitle">Master vs Mini</div>
         <canvas id="ch-modelo"></canvas>
       </div>
       <div class="chart-box">
-        <div class="ctitle">Estilo de Chopp</div>
-        <canvas id="ch-estilo"></canvas>
+        <div class="ctitle">Voltagem · 110v vs 220v</div>
+        <canvas id="ch-volt"></canvas>
       </div>
       <div class="chart-box">
         <div class="ctitle">Forma de Pagamento</div>
@@ -643,19 +714,47 @@ body {
       </div>
     </div>
 
-    <div class="g2">
+    <!-- BLOCO 2: O COMPRADOR (ICP) -->
+    <div class="blk-lbl">👤 O Comprador <span class="blk-src" id="icp-lbl-status">ICP · carregando...</span></div>
+    <div class="icp-demo-row" id="icp-demo-row">
+      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Gênero</div></div>
+      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Faixa Etária</div></div>
+      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Interior SP</div></div>
+      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Casados</div></div>
+      <div class="icp-dc"><div class="icp-dc-v">—</div><div class="icp-dc-l">Pagamento</div></div>
+    </div>
+    <div class="g2 mb">
       <div class="chart-box">
-        <div class="ctitle">Litragem Média por Modelo</div>
-        <div class="mbar-list" id="bar-litros"><div class="empty"><div class="ei">📊</div>Aguardando dados</div></div>
+        <div class="ctitle">Top Profissões · ICP</div>
+        <div class="mbar-list" id="bar-prof"><div class="empty"><div class="ei">👔</div>Carregando ICP...</div></div>
       </div>
       <div class="chart-box">
-        <div class="ctitle">Período de Entrega</div>
-        <div class="mbar-list" id="bar-periodo"><div class="empty"><div class="ei">📅</div>Aguardando dados</div></div>
+        <div class="ctitle">Uso Declarado · ICP</div>
+        <div id="uso-wrap"><div class="empty"><div class="ei">🏠</div>Carregando ICP...</div></div>
       </div>
     </div>
+
+    <!-- BLOCO 3: ACELERADORES -->
+    <div class="blk-lbl">⚡ Aceleradores de Venda <span class="blk-src">ICP · insights qualitativos</span></div>
+    <div class="g3 mb" id="acel-wrap">
+      <div class="acel-card"><div class="acel-ico">🎁</div><div class="acel-txt"><strong>Brinde Projetor 4K</strong><p>Presente em todas as conversas. Gerou reação imediata e acelerou fechamentos.</p></div></div>
+      <div class="acel-card"><div class="acel-ico">💰</div><div class="acel-txt"><strong>Crédito de Chopp como ROI</strong><p>Quem entende o mecanismo 50/50 avança. Explicar bem = menos objeção de preço.</p></div></div>
+      <div class="acel-card"><div class="acel-ico">🍺</div><div class="acel-txt"><strong>Familiaridade com a Marca</strong><p>Consumidores anteriores da Germânia convertem mais rápido e com menos objeções.</p></div></div>
+    </div>
+    <div class="g2">
+      <div class="chart-box">
+        <div class="ctitle">Principais Objeções</div>
+        <div class="mbar-list" id="bar-objecoes"></div>
+      </div>
+      <div class="chart-box">
+        <div class="ctitle">Dúvidas Antes do Fechamento</div>
+        <div class="mbar-list" id="bar-duvidas"></div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ── OPERACIONAL ── -->
+    <!-- ── OPERACIONAL ── -->
   <div class="tab-panel" id="panel-operacional">
     <div class="mkpi-row">
       <div class="mkpi"><div class="mkpi-v" id="mk-tpi">—</div><div class="mkpi-l">TPI Médio</div></div>
@@ -1109,27 +1208,161 @@ function renderFunil(rd){
 }
 
 function renderChopeira(rd){
-  const g=rd.filter(r=>estadoNorm(r)==='Ganho');
-  const li=g.map(r=>parseFloat((r['Litragem']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
-  const pe=g.map(r=>parseFloat((r['Quantidade de pessoas']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
-  const va=g.map(r=>parseFloat((r['Valor Único']||r['Valor']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
-  const rt=g.filter(r=>(r['Retirada da Chopeira']||'').toLowerCase()==='sim').length;
-  document.getElementById('mk-litros').textContent=li.length?Math.round(avg(li))+'L':'—';
-  document.getElementById('mk-pessoas').textContent=pe.length?Math.round(avg(pe)):'—';
-  document.getElementById('mk-vmedio').textContent=va.length?fmtBRL(avg(va)):'—';
-  document.getElementById('mk-retirada').textContent=g.length?Math.round(rt/g.length*100)+'%':'—';
+  const vendidas=rd.filter(r=>estadoNorm(r)==='Ganho');
 
-  const mod=freq(rd,'Modelo de Chopeira');
-  if(mod.length) donut('ch-modelo',mod.slice(0,7).map(e=>e[0]),mod.slice(0,7).map(e=>e[1]));
-  const est=freq(rd,'Estilo Chopp');
-  if(est.length) donut('ch-estilo',est.map(e=>e[0]),est.map(e=>e[1]));
+  // ── MINI KPIs AO VIVO ──
+  const modFreq=freq(rd,'Modelo de Chopeira');
+  document.getElementById('mk-modelo-top').textContent=modFreq.length?modFreq[0][0].replace('Chopp ',''):'—';
+
+  // Voltagem: extrai de "Master 110v" / "Mini 220v"
+  const voltMap={'110v':0,'220v':0};
+  rd.forEach(r=>{
+    const m=(r['Modelo de Chopeira']||'').toLowerCase();
+    if(m.includes('110')) voltMap['110v']++;
+    else if(m.includes('220')) voltMap['220v']++;
+  });
+  const voltTop=voltMap['110v']>=voltMap['220v']?'110v':'220v';
+  document.getElementById('mk-volt-top').textContent=voltTop+' ('+Math.max(voltMap['110v'],voltMap['220v'])+')';
+
+  const va=vendidas.map(r=>parseFloat((r['Valor Único']||r['Valor']||'').replace(',','.'))).filter(v=>!isNaN(v)&&v>0);
+  document.getElementById('mk-vmedio').textContent=va.length?fmtBRL(avg(va)):'—';
+
+  const rt=vendidas.filter(r=>(r['Retirada da Chopeira']||'').toLowerCase()==='sim').length;
+  document.getElementById('mk-retirada').textContent=vendidas.length?Math.round(rt/vendidas.length*100)+'%':'—';
+
+  // ── DONUTS ──
+  // Master vs Mini
+  const master=rd.filter(r=>(r['Modelo de Chopeira']||'').toLowerCase().includes('master')).length;
+  const mini=rd.filter(r=>(r['Modelo de Chopeira']||'').toLowerCase().includes('mini')).length;
+  if(master+mini>0) donut('ch-modelo',['Master','Mini'],[master,mini],[C[0],C[1]]);
+
+  // 110v vs 220v
+  if(voltMap['110v']+voltMap['220v']>0) donut('ch-volt',['110v','220v'],[voltMap['110v'],voltMap['220v']],[C[2],C[3]]);
+
+  // Pagamento
   const pg=freq(rd,'Forma de pagamento');
   if(pg.length) donut('ch-pgto',pg.map(e=>e[0]),pg.map(e=>e[1]));
 
-  const lm={};
-  rd.forEach(r=>{const m=(r['Modelo de Chopeira']||'').trim(),l=parseFloat((r['Litragem']||'').replace(',','.'));if(m&&!isNaN(l)&&l>0){if(!lm[m])lm[m]=[];lm[m].push(l);}});
-  mbar('bar-litros',Object.entries(lm).map(([k,vs])=>[k+' (méd. '+Math.round(avg(vs))+'L)',Math.round(avg(vs))]).sort((a,b)=>b[1]-a[1]),'blue');
-  mbar('bar-periodo',freq(rd,'Período de entrega'),'green');
+  // ── ICP (se carregado) ──
+  if(icpData) renderICP();
+}
+
+// ── ICP FETCH ──
+const ICP_URL='https://biels0n.github.io/personasgermaniamkt/';
+let icpData=null;
+
+async function fetchICP(){
+  try{
+    const res=await fetch(ICP_URL,{cache:'no-store'});
+    const html=await res.text();
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    const lines=(doc.body.innerText||doc.body.textContent||'')
+      .split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+
+    const after=(label,offset=1)=>{
+      const idx=lines.findIndex(l=>l.toLowerCase().includes(label.toLowerCase()));
+      return idx>=0&&lines[idx+offset]?lines[idx+offset].trim():'—';
+    };
+
+    icpData={
+      vendas:         after('Vendas',1),
+      ticketMedio:    after('Ticket médio',1),
+      masterMiniSplit:after('Split Master',1),
+      masterMiniPct:  after('Split Master',2),
+      genero:         after('Gênero',1),
+      generoPct:      after('Gênero',2),
+      faixaEtaria:    after('Faixa etária',1),
+      estadoCivil:    after('Estado civil',1),
+      interiorCap:    after('Interior vs Capital',1),
+      profissoes:     after('Profissão declarada',2),
+      voltagem:       after('Voltagem predominante',1),
+      pagamento:      after('Forma de pagamento',1),
+      residencialPct: '~78%',
+      comercialPct:   '~22%',
+      totalBase:      after('Amostra histórica',1),
+    };
+
+    // Label de status
+    const lbl=document.getElementById('icp-lbl-status');
+    if(lbl) lbl.textContent='ICP · '+icpData.vendas+' vendas · atualizado';
+
+    renderICP();
+  } catch(e){
+    const lbl=document.getElementById('icp-lbl-status');
+    if(lbl){lbl.textContent='ICP · erro ao carregar';lbl.style.color='var(--s-red)';}
+    console.warn('fetchICP error:',e);
+  }
+}
+
+function renderICP(){
+  if(!icpData) return;
+
+  // ── DEMO CARDS ──
+  const demoRow=document.getElementById('icp-demo-row');
+  if(demoRow){
+    const cards=[
+      {v:icpData.generoPct||icpData.genero, l:'Gênero'},
+      {v:icpData.faixaEtaria,               l:'Faixa Etária'},
+      {v:'78%',                             l:'Interior SP'},
+      {v:icpData.estadoCivil,               l:'Estado Civil'},
+      {v:'Crédito 12x',                     l:'Pagamento'},
+    ];
+    demoRow.innerHTML=cards.map(c=>`
+      <div class="icp-dc">
+        <div class="icp-dc-v">${c.v}</div>
+        <div class="icp-dc-l">${c.l}</div>
+      </div>`).join('');
+  }
+
+  // ── PROFISSÕES ──
+  const profStr=icpData.profissoes||'';
+  const profs=profStr.split(/[·,]/).map(p=>p.trim()).filter(p=>p&&p!=='—');
+  const profEntries=profs.map((p,i)=>[p, profs.length-i]);
+  mbar('bar-prof', profEntries.length?profEntries:[['Sem dados',1]], 'gold');
+
+  // ── USO DECLARADO ──
+  const uso=document.getElementById('uso-wrap');
+  if(uso){
+    uso.innerHTML=`
+      <div class="uso-row">
+        <span class="uso-lbl">🏠 Residencial</span>
+        <div class="uso-bar-track"><div class="uso-bar-fill" style="width:78%;background:var(--gold)"></div></div>
+        <span class="uso-pct">78%</span>
+      </div>
+      <div class="uso-row">
+        <span class="uso-lbl">🏪 Comercial</span>
+        <div class="uso-bar-track"><div class="uso-bar-fill" style="width:22%;background:var(--blue)"></div></div>
+        <span class="uso-pct">22%</span>
+      </div>
+      <div style="font-size:10px;color:var(--txt-faint);margin-top:10px;line-height:1.5">
+        Família · amigos · sítio · festas (residencial)<br>
+        Bar próprio · revenda de chopp (comercial)
+      </div>`;
+  }
+
+  // ── OBJEÇÕES ──
+  const objecoes=[
+    ['Valor alto de investimento',4],
+    ['Medo de não ter saída do chopp',3],
+    ['Prazo de entrega',3],
+    ['Limite de cartão insuficiente',2],
+    ['Logística de barris / frete',2],
+    ['Dúvida sobre boleto',1],
+  ];
+  mbar('bar-objecoes',objecoes,'red');
+
+  // ── DÚVIDAS ──
+  const duvidas=[
+    ['Como funciona o crédito de chopp',5],
+    ['Prazo de entrega',4],
+    ['Instalação inclusa?',4],
+    ['Voltagem disponível',3],
+    ['Aceita outros barris?',3],
+    ['A chopeira fica comigo?',3],
+    ['Tem loja próxima?',2],
+    ['Tem desconto à vista?',2],
+  ];
+  mbar('bar-duvidas',duvidas,'blue');
 }
 
 function renderOperacional(ez){
@@ -1190,6 +1423,7 @@ function renderCampanhas(rd){
 initDates();
 setAutoRefresh();
 if(URLS.ez||URLS.rd){ fetchSheets(); }
+fetchICP(); // ICP sempre carrega independente do Sheets
 </script>
 </body>
 </html>
