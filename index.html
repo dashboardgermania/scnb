@@ -1676,21 +1676,23 @@ function renderFunil(rd){
   mbar('bar-perda',freq(rd,'Motivo de Perda'),'red');
 
   // ── ADS VS ORGÂNICO ──
-  const isAds=r=>{
-    const c=(r['Campanha']||'').toLowerCase();
-    return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');
+  // Mesma lógica de renderCampanhas: norm() + filterRDCriacao para leads
+  const normF=r=>(r['Campanha']||'').toLowerCase().replace(/\s+/g,' ').trim();
+  const isAds=r=>{const c=normF(r);return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');};
+  const rdCriacaoF=filterRDCriacao();
+  // Leads: por criação | Vendas/Perdas: por fechamento (rd já filtrado)
+  const sa={
+    total:rdCriacaoF.filter(r=>isAds(r)).length,
+    vendas:rd.filter(r=>isAds(r)&&estadoNorm(r)==='Ganho').length,
+    perdas:rd.filter(r=>isAds(r)&&estadoNorm(r)==='Perdido').length,
+    conv(){const d=this.vendas+this.perdas;return d?Math.round(this.vendas/d*100)+'%':'—';}
   };
-  const ads=rd.filter(r=>isAds(r));
-  const org=rd.filter(r=>!isAds(r));
-
-  const stats=arr=>({
-    total:arr.length,
-    vendas:arr.filter(r=>estadoNorm(r)==='Ganho').length,
-    perdas:arr.filter(r=>estadoNorm(r)==='Perdido').length,
-    conv:()=>{const d=arr.filter(r=>estadoNorm(r)==='Ganho').length+arr.filter(r=>estadoNorm(r)==='Perdido').length;return d?Math.round(arr.filter(r=>estadoNorm(r)==='Ganho').length/d*100)+'%':'—';}
-  });
-
-  const sa=stats(ads), so=stats(org);
+  const so={
+    total:rdCriacaoF.filter(r=>!isAds(r)).length,
+    vendas:rd.filter(r=>!isAds(r)&&estadoNorm(r)==='Ganho').length,
+    perdas:rd.filter(r=>!isAds(r)&&estadoNorm(r)==='Perdido').length,
+    conv(){const d=this.vendas+this.perdas;return d?Math.round(this.vendas/d*100)+'%':'—';}
+  };
   const wrap=document.getElementById('ads-org-wrap');
   if(wrap){
     wrap.innerHTML=`
@@ -1973,12 +1975,11 @@ function renderCampanhas(rd){
   // Para conversões: usa rd já filtrado por fechamento
   const rdCriacao=filterRDCriacao();
 
-  const isAds=r=>{
-    const c=(r['Campanha']||'').toLowerCase();
-    return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');
-  };
-  const isWPP=r=>{const c=(r['Campanha']||'').toLowerCase();return c.includes('botao wpp')||c.includes('botão wpp');};
-  const isForm=r=>{const c=(r['Campanha']||'').toLowerCase();return c.includes('form direto');};
+  // Normaliza espaços duplos antes de comparar (campo do RD tem "SCNB -  Form DIRETO" com 2 espaços)
+  const norm=r=>(r['Campanha']||'').toLowerCase().replace(/\s+/g,' ').trim();
+  const isAds=r=>{const c=norm(r);return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');};
+  const isWPP=r=>{const c=norm(r);return c.includes('botao wpp')||c.includes('botão wpp');};
+  const isForm=r=>{const c=norm(r);return c.includes('form direto');};
 
   const wpp={total:rdCriacao.filter(isWPP).length, v:rd.filter(r=>isWPP(r)&&estadoNorm(r)==='Ganho').length, p:rd.filter(r=>isWPP(r)&&estadoNorm(r)==='Perdido').length, conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}};
   const form={total:rdCriacao.filter(isForm).length, v:rd.filter(r=>isForm(r)&&estadoNorm(r)==='Ganho').length, p:rd.filter(r=>isForm(r)&&estadoNorm(r)==='Perdido').length, conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}};
