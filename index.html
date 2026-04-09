@@ -1524,6 +1524,17 @@ function filterRD(){
     return true;
   });
 }
+// Filtra RD sempre por Data de CRIAÇÃO (para contagem de leads)
+function filterRDCriacao(){
+  return rawRD.filter(r=>{
+    const d=parseDateRD(r['Data de criação'],r['Hora de criação']);
+    if(!d) return false;
+    if(dateFrom&&d<dateFrom) return false;
+    if(dateTo&&d>dateTo) return false;
+    return true;
+  });
+}
+
 // Normaliza estados do RD Station → padrão interno
 function estadoNorm(r){
   const e=(r['Estado']||'').trim();
@@ -1958,6 +1969,10 @@ function renderOperacional(ez){
 }
 
 function renderCampanhas(rd){
+  // Para leads: usa criação (quantos entraram no período)
+  // Para conversões: usa rd já filtrado por fechamento
+  const rdCriacao=filterRDCriacao();
+
   const isAds=r=>{
     const c=(r['Campanha']||'').toLowerCase();
     return c.includes('botao wpp')||c.includes('botão wpp')||c.includes('form direto')||c.includes('turma');
@@ -1965,17 +1980,10 @@ function renderCampanhas(rd){
   const isWPP=r=>{const c=(r['Campanha']||'').toLowerCase();return c.includes('botao wpp')||c.includes('botão wpp');};
   const isForm=r=>{const c=(r['Campanha']||'').toLowerCase();return c.includes('form direto');};
 
-  const s=arr=>({
-    total:arr.length,
-    v:arr.filter(r=>estadoNorm(r)==='Ganho').length,
-    p:arr.filter(r=>estadoNorm(r)==='Perdido').length,
-    conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}
-  });
-
-  const wpp=s(rd.filter(isWPP));
-  const form=s(rd.filter(isForm));
-  const ads=s(rd.filter(isAds));
-  const org=s(rd.filter(r=>!isAds(r)));
+  const wpp={total:rdCriacao.filter(isWPP).length, v:rd.filter(r=>isWPP(r)&&estadoNorm(r)==='Ganho').length, p:rd.filter(r=>isWPP(r)&&estadoNorm(r)==='Perdido').length, conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}};
+  const form={total:rdCriacao.filter(isForm).length, v:rd.filter(r=>isForm(r)&&estadoNorm(r)==='Ganho').length, p:rd.filter(r=>isForm(r)&&estadoNorm(r)==='Perdido').length, conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}};
+  const ads={total:rdCriacao.filter(isAds).length, v:rd.filter(r=>isAds(r)&&estadoNorm(r)==='Ganho').length, p:rd.filter(r=>isAds(r)&&estadoNorm(r)==='Perdido').length, conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}};
+  const org={total:rdCriacao.filter(r=>!isAds(r)).length, v:rd.filter(r=>!isAds(r)&&estadoNorm(r)==='Ganho').length, p:rd.filter(r=>!isAds(r)&&estadoNorm(r)==='Perdido').length, conv(){const d=this.v+this.p;return d?Math.round(this.v/d*100)+'%':'—';}};
 
   // ── MINI KPIs topo ──
   document.getElementById('ck-ads-total').textContent=ads.total||'0';
@@ -2002,7 +2010,7 @@ function renderCampanhas(rd){
   document.getElementById('cf-bar').style.width=formBarPct+'%';
 
   // ── DONUT ──
-  const other=rd.length-wpp.total-form.total;
+  const other=rdCriacao.length-wpp.total-form.total;
   const cd=[
     {l:'WPP Button',v:wpp.total,c:'#1E7A42'},
     {l:'Form Direto',v:form.total,c:'#5B7FA6'},
