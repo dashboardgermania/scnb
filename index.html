@@ -1067,10 +1067,11 @@ body {
 
     <!-- Mini KPIs -->
     <div class="mkpi-row">
+      <div class="mkpi"><div class="mkpi-v" id="mk-atend-funil">—</div><div class="mkpi-l">Atendimentos</div></div>
       <div class="mkpi"><div class="mkpi-v" id="mk-apres">—</div><div class="mkpi-l">Apresentações</div></div>
       <div class="mkpi"><div class="mkpi-v red" id="mk-perdido">—</div><div class="mkpi-l">Perdidas</div></div>
       <div class="mkpi"><div class="mkpi-v green" id="mk-ganho">—</div><div class="mkpi-l">Vendas</div></div>
-      <div class="mkpi"><div class="mkpi-v gold" id="mk-valor">—</div><div class="mkpi-l">Valor Total</div></div>
+      <div class="mkpi"><div class="mkpi-v gold" id="mk-valor">—</div><div class="mkpi-l">Faturado</div></div>
     </div>
 
     <!-- Linha 1: Motivos de Perda + Ads vs Orgânico -->
@@ -1392,6 +1393,17 @@ function fmtBRLk(v){
 }
 function avg(a){ return a.length?a.reduce((x,y)=>x+y,0)/a.length:null; }
 
+// Conta atendimentos reais únicos por Protocolo
+// EZ gera múltiplas linhas por atendimento (bot + humano com mesmo Protocolo)
+function countUnique(arr){
+  const seen=new Set();
+  arr.forEach(r=>{
+    const p=(r['Protocolo']||'').toString().trim();
+    if(p) seen.add(p);
+  });
+  return seen.size||arr.length; // fallback se Protocolo vazio
+}
+
 // ═══════════════════════════════════════
 // CSV
 // ═══════════════════════════════════════
@@ -1606,6 +1618,10 @@ function renderFunil(rd){
   const g=rd.filter(r=>estadoNorm(r)==='Ganho').length;
   const p=rd.filter(r=>estadoNorm(r)==='Perdido').length;
   const vg=rd.filter(r=>estadoNorm(r)==='Ganho').reduce((s,r)=>{const v=parseFloat((r['Valor Único']||r['Valor']||'0').replace(',','.'));return s+(isNaN(v)?0:v);},0);
+
+  // Atendimentos únicos EZ (deduplicado por Protocolo)
+  const ezFilt=filterEZ();
+  document.getElementById('mk-atend-funil').textContent=countUnique(ezFilt)||'0';
 
   // Apresentações = negociações na etapa "Atendimento / Demonstração"
   const apres=rd.filter(r=>(r['Etapa']||'').toLowerCase().includes('atendimento')||
@@ -1874,7 +1890,7 @@ function renderICP(){
 }
 
 function renderOperacional(ez){
-  document.getElementById('mk-atend-op').textContent=ez.length||'0';
+  document.getElementById('mk-atend-op').textContent=countUnique(ez)||'0';
   const tpis=ez.map(r=>parseMin(r['Tempo para Primeira Interação'])).filter(v=>v!==null&&v>=0);
   const tmas=ez.map(r=>parseMin(r['Tempo de Atendimento'])).filter(v=>v!==null&&v>0);
   const ia=ez.map(r=>parseInt(r['Contagem de Interações do Agente'])).filter(v=>!isNaN(v)&&v>=0);
