@@ -1215,15 +1215,16 @@ body {
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-let rawEZ=[], rawRD=[];
+let rawEZ=[], rawRD=[], rawHistorico=[];
 let charts={};
 let dateFrom=null, dateTo=null;
 let autoTimer=null;
 let activeTab='funil';
 
 const URLS = {
-  ez: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRwjKZdc3VWroSiXSwcxo1RI_PbXZy3rdcZTnKwI1nQZ5rjwGjv9yP1jdjjyh5ucqaZVRQDmJL_oeMo/pub?gid=0&single=true&output=csv',
-  rd: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRwjKZdc3VWroSiXSwcxo1RI_PbXZy3rdcZTnKwI1nQZ5rjwGjv9yP1jdjjyh5ucqaZVRQDmJL_oeMo/pub?gid=1473909062&single=true&output=csv'
+  ez:       'https://docs.google.com/spreadsheets/d/e/2PACX-1vRwjKZdc3VWroSiXSwcxo1RI_PbXZy3rdcZTnKwI1nQZ5rjwGjv9yP1jdjjyh5ucqaZVRQDmJL_oeMo/pub?gid=0&single=true&output=csv',
+  rd:       'https://docs.google.com/spreadsheets/d/e/2PACX-1vRwjKZdc3VWroSiXSwcxo1RI_PbXZy3rdcZTnKwI1nQZ5rjwGjv9yP1jdjjyh5ucqaZVRQDmJL_oeMo/pub?gid=1473909062&single=true&output=csv',
+  historico:'https://docs.google.com/spreadsheets/d/e/2PACX-1vRwjKZdc3VWroSiXSwcxo1RI_PbXZy3rdcZTnKwI1nQZ5rjwGjv9yP1jdjjyh5ucqaZVRQDmJL_oeMo/pub?gid=140589872&single=true&output=csv'
 };
 
 // ═══════════════════════════════════════
@@ -1291,7 +1292,38 @@ function countUnique(arr){
     const p=(r['Protocolo']||'').toString().trim();
     if(p) seen.add(p);
   });
-  return seen.size||arr.length; // fallback se Protocolo vazio
+  return seen.size||arr.length;
+}
+
+// Conta atendimentos do EZ + fallback do histórico para datas sem dados no EZ
+function countUniqueComHistorico(ezArr){
+  // Datas que o EZ já cobre
+  const datasCobertasEZ=new Set();
+  ezArr.forEach(r=>{
+    const d=parseDate(r['Criado em']);
+    if(d) datasCobertasEZ.add(fmt(d));
+  });
+
+  // Soma histórico apenas para datas NÃO cobertas pelo EZ e dentro do filtro
+  let totalHistorico=0;
+  rawHistorico.forEach(r=>{
+    const dataStr=(r['Data']||'').trim();
+    if(!dataStr) return;
+    // Converte DD/MM/YYYY → Date
+    const parts=dataStr.split('/');
+    if(parts.length<3) return;
+    const d=new Date(+parts[2],+parts[1]-1,+parts[0]);
+    if(isNaN(d)) return;
+    if(dateFrom&&d<dateFrom) return;
+    if(dateTo&&d>dateTo) return;
+    const key=fmt(d);
+    if(!datasCobertasEZ.has(key)){
+      const qtd=parseInt(r['Atendimentos']||'0');
+      if(!isNaN(qtd)) totalHistorico+=qtd;
+    }
+  });
+
+  return countUnique(ezArr)+totalHistorico;
 }
 
 // ═══════════════════════════════════════
@@ -1340,10 +1372,16 @@ async function fetchSheets(){
     const res=await fetch(url,{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const d=parseCSV(await res.text());
-    if(type==='ez') rawEZ=d; else rawRD=d;
+    if(type==='ez') rawEZ=d;
+    else if(type==='rd') rawRD=d;
+    else if(type==='hist') rawHistorico=d;
   };
   let errs=[];
-  await Promise.allSettled([go(ez,'ez').catch(e=>errs.push('EZ:'+e.message)),go(rd,'rd').catch(e=>errs.push('RD:'+e.message))]);
+  await Promise.allSettled([
+    go(ez,'ez').catch(e=>errs.push('EZ:'+e.message)),
+    go(rd,'rd').catch(e=>errs.push('RD:'+e.message)),
+    go(URLS.historico,'hist').catch(e=>console.warn('Histórico:',e.message))
+  ]);
   document.getElementById('syncBtn').classList.remove('loading');
   errs.length?setSS('err','Erro: '+errs.join(' ')):setSS('ok','Sync: '+new Date().toLocaleTimeString('pt-BR'));
   renderAll();
@@ -1522,7 +1560,7 @@ function renderFunil(rd){
 
   // Atendimentos únicos EZ (deduplicado por Protocolo)
   const ezFilt=filterEZ();
-  document.getElementById('mk-atend-funil').textContent=countUnique(ezFilt)||'0';
+  document.getElementById('mk-atend-funil').textContent=countUniqueComHistorico(ezFilt)||'0';
 
   // Apresentações = negociações na etapa "Atendimento / Demonstração"
   const apres=rd.filter(r=>(r['Etapa']||'').toLowerCase().includes('atendimento')||
@@ -1793,7 +1831,7 @@ function renderICP(){
 }
 
 function renderOperacional(ez){
-  document.getElementById('mk-atend-op').textContent=countUnique(ez)||'0';
+  document.getElementById('mk-atend-op').textContent=countUniqueComHistorico(ez)||'0';
   const tpis=ez.map(r=>parseMin(r['Tempo para Primeira Interação'])).filter(v=>v!==null&&v>=0);
   const tmas=ez.map(r=>parseMin(r['Tempo de Atendimento'])).filter(v=>v!==null&&v>0);
   const ia=ez.map(r=>parseInt(r['Contagem de Interações do Agente'])).filter(v=>!isNaN(v)&&v>=0);
