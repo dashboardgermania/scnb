@@ -872,6 +872,17 @@ body {
 .tab-panel { display:none; }
 .tab-panel.active { display:flex; flex-direction:column; gap:14px; }
 
+
+/* ── Última atualização — texto leve ── */
+.upd-label {
+  font-size: 10px;
+  color: var(--txt-faint);
+  letter-spacing: .07em;
+  white-space: nowrap;
+  margin-left: auto;
+  padding: 5px 0;
+}
+
 </style>
 </head>
 <body>
@@ -923,7 +934,7 @@ body {
   <div class="f-group">
     <span class="f-lbl">Período</span>
     <div class="f-shortcuts">
-      <button class="btn-sh" onclick="setShortcut('today',this)">Hoje</button>
+      <button class="btn-sh" onclick="setShortcut('quarter',this)">Trimestre</button>
       <button class="btn-sh" onclick="setShortcut('7d',this)">7 dias</button>
       <button class="btn-sh" onclick="setShortcut('15d',this)">15 dias</button>
       <button class="btn-sh active" onclick="setShortcut('thismonth',this)">Este Mês</button>
@@ -940,12 +951,7 @@ body {
   <button class="btn-f" onclick="applyFilter()">Filtrar</button>
 
   <div class="sync-group">
-    <button class="sync-btn" id="syncBtn" onclick="fetchSheets()">
-      <span class="spin" id="spinIco">↻</span> Atualizar
-    </button>
-    <div class="sync-status" id="syncStatus">
-      <span class="sync-dot"></span>Carregando...
-    </div>
+    <div class="upd-label" id="updLabel">Carregando dados...</div>
   </div>
 </div>
 
@@ -1366,7 +1372,7 @@ async function fetchSheets(){
   const rd=URLS.rd;
   if(!ez&&!rd){setSS('err','Insira ao menos uma URL');return;}
   setSS('loading','Sincronizando...');
-  document.getElementById('syncBtn').classList.add('loading');
+
   const go=async(url,type)=>{
     if(!url) return;
     const res=await fetch(url,{cache:'no-store'});
@@ -1382,14 +1388,30 @@ async function fetchSheets(){
     go(rd,'rd').catch(e=>errs.push('RD:'+e.message)),
     go(URLS.historico,'hist').catch(e=>console.warn('Histórico:',e.message))
   ]);
-  document.getElementById('syncBtn').classList.remove('loading');
+
   errs.length?setSS('err','Erro: '+errs.join(' ')):setSS('ok','Sync: '+new Date().toLocaleTimeString('pt-BR'));
   renderAll();
 }
 function setSS(state,msg){
-  const el=document.getElementById('syncStatus');
-  el.className='sync-status '+state;
-  el.innerHTML=`<span class="sync-dot"></span>${msg}`;
+  // Mantido por compatibilidade mas não faz nada visível
+}
+
+function atualizaUltimaVenda(){
+  // Pega a data de fechamento mais recente entre todas as vendidas
+  const vendidas=rawRD.filter(r=>estadoNorm(r)==='Ganho');
+  let ultima=null;
+  vendidas.forEach(r=>{
+    const d=parseDateRD(r['Data de fechamento'],r['Hora de fechamento']);
+    if(d&&(!ultima||d>ultima)) ultima=d;
+  });
+  const el=document.getElementById('updLabel');
+  if(!el) return;
+  if(ultima){
+    const opts={day:'2-digit',month:'2-digit',year:'numeric'};
+    el.textContent='Última venda em '+ultima.toLocaleDateString('pt-BR',opts);
+  } else {
+    el.textContent='Dados carregados';
+  }
 }
 function setAutoRefresh(){
   if(autoTimer) clearInterval(autoTimer);
@@ -1416,6 +1438,12 @@ function setShortcut(type,el){
   else if(type==='15d'){f=new Date(+n-15*864e5);t=n;}
   else if(type==='thismonth'){f=new Date(y,m,1);t=new Date(y,m+1,0);}
   else if(type==='lastmonth'){f=new Date(y,m-1,1);t=new Date(y,m,0);}
+  else if(type==='quarter'){
+    // Trimestre atual: Jan-Mar, Abr-Jun, Jul-Set, Out-Dez
+    const q=Math.floor(m/3);
+    f=new Date(y,q*3,1);
+    t=new Date(y,q*3+3,0);
+  }
   else if(type==='all'){f=new Date(2020,0,1);t=new Date(2030,11,31);}
   document.getElementById('dateFrom').value=fmt(f);
   document.getElementById('dateTo').value=fmt(t);
@@ -1536,6 +1564,7 @@ function renderAll(){
   renderChopeira(rd);
   renderOperacional(ez);
   renderCampanhas(rd);
+  atualizaUltimaVenda();
 }
 
 function renderHeader(ez,rd){
