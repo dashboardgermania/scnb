@@ -1439,10 +1439,9 @@ function setShortcut(type,el){
   else if(type==='thismonth'){f=new Date(y,m,1);t=new Date(y,m+1,0);}
   else if(type==='lastmonth'){f=new Date(y,m-1,1);t=new Date(y,m,0);}
   else if(type==='quarter'){
-    // Trimestre atual: Jan-Mar, Abr-Jun, Jul-Set, Out-Dez
-    const q=Math.floor(m/3);
-    f=new Date(y,q*3,1);
-    t=new Date(y,q*3+3,0);
+    // Últimos 90 dias corridos
+    f=new Date(+n-90*864e5);
+    t=n;
   }
   else if(type==='all'){f=new Date(2020,0,1);t=new Date(2030,11,31);}
   document.getElementById('dateFrom').value=fmt(f);
